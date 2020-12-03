@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-<div class="container">
 <div class="jumbotron jumbotron-fluid">
     <div class="container">
         <h1 class="display-3">Bienvenue sur la homepage</h1>
@@ -8,5 +7,21 @@
         <hr class="my-2">
     </div>
 </div>
+
+<div class="container">
+    <h2>Les figures</h2>
+    <div class='row'>
+        {% for trick in tricks %}
+            <div class='col-5'>
+                <div class='card'>
+                    <div class='card-body'>
+                        <h5 class='card-title'>
+                            <a href="#">{{ trick.title }}</a>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

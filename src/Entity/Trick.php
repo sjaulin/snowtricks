@@ -32,6 +32,11 @@ class Trick
      */
     private $created_at;
 
+    public function __construct()
+    {
+        $this->created_at = new \DateTime();
+    }
+    
     /**
      * @ORM\Column(type="integer")
      */
