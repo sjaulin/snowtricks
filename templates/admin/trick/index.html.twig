@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'Gérer les biens' %}
+
+{% block body %}
+	<div class="container">
+		<h2>Gérer les figures</h2>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Figure</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for trick in tricks %}
+					<tr>
+                    <td>{{ trick.title }}</td>
+                    <td><a href="{{ path('admin.trick.edit', {id: trick.id}) }}" class="btn btn-secondary">Editer</a></td>
+                    </tr>
+				{% endfor %}
+			</tbody>
+		</table</div>
+	{% endblock %}
