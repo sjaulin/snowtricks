@@ -37,11 +37,6 @@ class Trick
         $this->created_at = new \DateTime();
     }
     
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $category;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -79,18 +74,6 @@ class Trick
     public function setCreatedAt(\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
-
-        return $this;
-    }
-
-    public function getCategory(): ?int
-    {
-        return $this->category;
-    }
-
-    public function setCategory(int $category): self
-    {
-        $this->category = $category;
 
         return $this;
     }
