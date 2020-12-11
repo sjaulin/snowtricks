@@ -1,0 +1,45 @@
+@startuml
+package "Entity" #eeeeee {
+        class User {
+            {field} id: int
+            {field} pseudo: string
+            {field} name: string
+            {field} email: string
+            {field} password: string
+            {field} registerAt: DateTimeInterface
+        }
+
+        class SnowBoarder {
+
+        }
+
+        class Admin 
+
+        class Category {
+            {field} id: int
+            {field} name: string
+        }
+        
+        class Trick {
+            {field} id: int
+            {field} name: string
+            {field} description: string
+            {field} publishedAt: DateTimeInterface
+        }
+
+        class Image 
+        class Video
+        class Comment
+
+        User <|-- SnowBoarder
+        User <|-- Admin
+
+        User "One" o-- "One" Image : To
+        SnowBoarder "One" *-- "Many" Trick : Author
+
+        Trick "One" *-- "Many" Category : To
+        Trick "One" o-- "Many" Image : To
+        Trick "One" o-- "Many" Video : To
+        Trick "One" o-- "Many" Comment : To
+    }
+@enduml
