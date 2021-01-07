@@ -10,6 +10,20 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TrickController extends AbstractController
 {
+
+
+    /**
+     * @Route("/", name="home", methods={"GET"})
+     */
+    public function home(TrickRepository $repository): Response
+    {
+        $tricks = $repository->findAll();
+
+        return new Response($this->render('home.html.twig', [
+            'tricks' => $tricks
+        ]));
+    }
+
     /**
      * @Route("/{slug}", name="trick_category")
      */
@@ -33,7 +47,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/{category_slug}/{slug}", name="trick_name")
+     * @Route("/{category_slug}/{slug}", name="trick")
      */
     public function show($slug, TrickRepository $trickRepository): Response
     {

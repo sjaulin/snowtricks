@@ -1,9 +1,9 @@
 <div class='col-5'>
 	<div class='card'>
-		<img src="{{ trick.mainPicture}}" alt="{{ trick.title }}" class="img-fluid">
+		<a href="{{ path('trick', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}"><img src="{{ trick.mainPicture}}" alt="{{ trick.name }}" class="img-fluid"></a>
 		<div class='card-body'>
 			<h5 class='card-title'>
-				<a href="#">{{ trick.title }}</a>
+				{{ trick.name }}
 			</h5>
 			<span class="badge badge-info">{{ trick.category.name }}</span>
 		</div>
