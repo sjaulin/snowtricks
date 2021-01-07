@@ -63,10 +63,10 @@ class AppFixtures extends Fixture
 
                 $trick = new Trick();
 
-                $trick->setTitle(ucwords($faker->word))
+                $trick->setName(ucwords($faker->word))
                     ->setDescription($faker->text(150))
                     ->setCreatedAt(new \DateTime)
-                    ->setSlug($this->slugger->slug(strtolower($trick->getTitle())))
+                    ->setSlug($this->slugger->slug(strtolower($trick->getName())))
                     ->setMainPicture($unsplash_pictures[0])
                     ->setCategory($category);
 

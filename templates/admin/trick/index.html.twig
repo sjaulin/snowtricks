@@ -15,7 +15,7 @@
 			<tbody>
 				{% for trick in tricks %}
 					<tr>
-						<td>{{ trick.title }}</td>
+						<td>{{ trick.name }}</td>
 						<td>
 							<a href="{{ path('admin.trick.edit', {id: trick.id}) }}" class="btn btn-secondary">Editer</a>
 						</td>
