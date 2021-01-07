@@ -1,0 +1,13 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    {{ slug }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ category.name }}</h1>
+
+    {% for trick in category.tricks %}
+        <p>{{ trick.title }}</p>
+    {% endfor %}
+{% endblock %}
