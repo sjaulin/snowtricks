@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    {{trick.title}} - {{trick.category.name}}
+{% endblock %}
+
+{% block body %}
+
+    <nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#">Home</a></li>
+    <li class="breadcrumb-item"><a href="#">Library</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Data</li>
+  </ol>
+</nav>
+
+    <h1>{{trick.title}}</h1>
+
+<div class="row">
+    <div class="col-4">
+        <img class="img-fluid" src="{{trick.mainPicture}}" alt="{{trick.title}}">
+    </div>
+    <div class="col">
+        {% include "category/badge.html.twig" %}
+        <p>{{trick.description}}</p>
+    </div>
+</div>
+{% endblock %}
