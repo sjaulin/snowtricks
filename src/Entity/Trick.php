@@ -33,12 +33,6 @@ class Trick
     private $created_at;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $category;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $mainPicture;
@@ -48,11 +42,16 @@ class Trick
      */
     private $slug;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="Tricks")
+     */
+    private $category;
+
     public function __construct()
     {
         $this->created_at = new \DateTime();
     }
-    
+
     public function getId(): ?int
     {
         return $this->id;
@@ -94,18 +93,6 @@ class Trick
         return $this;
     }
 
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?Category $category): self
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
     public function getMainPicture(): ?string
     {
         return $this->mainPicture;
@@ -126,6 +113,18 @@ class Trick
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }
