@@ -53,7 +53,7 @@ class AppFixtures extends Fixture
             // Categories
             $category = new Category();
             $category->setName(ucwords($faker->word));
-
+            $category->setSlug($this->slugger->slug(strtolower($category->getName())));
             $manager->persist($category);
             $manager->flush();
 
