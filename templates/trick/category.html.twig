@@ -1,27 +1,31 @@
 {% extends "base.html.twig" %}
 
 {% block title %}
-    {{ slug }}
+	{{ slug }}
 {% endblock %}
 
 {% block body %}
 
-<div class="container">
+	<div class="container">
 
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{{ path('home')}}">Accueil</a></li>
-      <li class="breadcrumb-item"><a href="{{ path('trick_category', {'slug' : category.slug})}}">{{ category.name }}</a></li>
-    </ol>
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{ path('home')}}">Accueil</a>
+			</li>
+			<li class="breadcrumb-item">
+				<a href="{{ path('trick.list', {'slug' : category.slug})}}">{{ category.name }}</a>
+			</li>
+		</ol>
 
-      <h1>{{ category.name }}</h1>
+		<h1>{{ category.name }}</h1>
 
-  <div class="row">
-      {% for trick in category.tricks %}
-          {% include "trick/_single.html.twig" %}
-      {% endfor %}
-  </div>
-  
-</div>
+		<div class="row">
+			{% for trick in category.tricks %}
+				{% include "trick/_single.html.twig" %}
+			{% endfor %}
+		</div>
+
+	</div>
 
 
 {% endblock %}

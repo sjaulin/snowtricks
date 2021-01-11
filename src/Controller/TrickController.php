@@ -25,7 +25,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/{slug}", name="trick_category")
+     * @Route("/{slug}", name="trick.list")
      */
     public function category($slug, CategoryRepository $categoryRepository): Response
     {
@@ -47,7 +47,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/{category_slug}/{slug}", name="trick")
+     * @Route("/{category_slug}/{slug}", name="trick.show")
      */
     public function show($slug, TrickRepository $trickRepository): Response
     {

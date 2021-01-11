@@ -1,30 +1,34 @@
 {% extends "base.html.twig" %}
 
 {% block title %}
-    {{trick.name}} - {{trick.category.name}}
+	{{trick.name}}
+	-
+	{{trick.category.name}}
 {% endblock %}
 
 {% block body %}
+	<div class="container">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{ path('home') }}">Accueil</a>
+			</li>
+			<li class="breadcrumb-item">
+				<a href="{{ path('trick.list', {'slug' : trick.category.slug }) }}">{{ trick.category.name }}</a>
+			</li>
+			<li class="breadcrumb-item active" aria-current="page">{{ trick.name }}</li>
+		</ol>
 
-		<div class="container">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ path('home') }}">Accueil</a></li>
-    <li class="breadcrumb-item"><a href="{{ path('trick_category', {'slug' : trick.category.slug }) }}">{{ trick.category.name }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ trick.name }}</li>
-  </ol>
 
+		<h1>{{trick.name}}</h1>
 
-
-    <h1>{{trick.name}}</h1>
-
-<div class="row">
-    <div class="col-4">
-        <img class="img-fluid" src="{{trick.mainPicture}}" alt="{{trick.name}}">
-    </div>
-    <div class="col">
-        {% include "trick/_category_badge.html.twig" %}
-        <p>{{trick.description}}</p>
-    </div>
-</div>
-</div>
+		<div class="row">
+			<div class="col-4">
+				<img class="img-fluid" src="{{trick.mainPicture}}" alt="{{trick.name}}">
+			</div>
+			<div class="col">
+				{% include "trick/_category_badge.html.twig" %}
+				<p>{{trick.description}}</p>
+			</div>
+		</div>
+	</div>
 {% endblock %}
