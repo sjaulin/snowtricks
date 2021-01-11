@@ -55,9 +55,9 @@ class AdminTrickController extends AbstractController
     }
 
     /**
-     * @Route("/admin/trick/create", name="admin.trick.new")
+     * @Route("/admin/trick/create", name="admin.trick.create")
      */
-    public function new(Request $request)
+    public function create(Request $request)
     {
         $trick = new Trick();
         $form = $this->createForm(TrickType::class, $trick);
@@ -68,9 +68,9 @@ class AdminTrickController extends AbstractController
             return $this->redirectToRoute('admin.trick.index');
         }
 
-        return $this->render('admin/trick/new.html.twig', [
+        return $this->render('admin/trick/create.html.twig', [
             'trick' => $trick,
-            'form' => $form->createView()
+            'formView' => $form->createView()
         ]);
     }
 }
