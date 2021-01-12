@@ -1,0 +1,68 @@
+@startuml PhysicalDataModel
+
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "user" {
+  *id: int <<generated>>
+  --
+    *pseudo: varchar
+    *email: varchar
+    *password: varchar
+    *create_at: datetime
+    is_admin: tinyint
+}
+
+entity "category" {
+  *id: int <<generated>>
+  --
+    name: varchar
+    slug: varchar
+}
+
+entity "trick" {
+  *id: int <<generated>>
+  --
+  *category_id: int <<FK>>
+  *user_id: int <<FK>>
+  *name: varchar
+  *slug: varchar
+  *description: text
+}
+
+entity "comment" {
+  *id: int <<generated>>
+  --
+  *trick_id: int <<FK>>
+  *user_id: int <<FK>>
+  *comment: text
+}
+
+entity "picture" {
+  *id: int <<generated>>
+  --
+  *trick_id: int <<FK>>
+  title: varchar
+  path: varchar
+}
+
+entity "video" {
+  *id: int <<generated>>
+  --
+  *trick_id: int <<FK>>
+  title: varchar
+  path: varchar
+}
+
+user ||..o{ trick
+category ||..o{ trick
+
+trick ||..o{ comment
+trick ||..o{ picture
+trick ||..o{ video
+user ||..o{ comment
+
+@enduml

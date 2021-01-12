@@ -1,16 +1,10 @@
-@startuml
-package "Entity" #eeeeee {
+@startuml Classes
         class User {
             {field} id: int
             {field} pseudo: string
-            {field} name: string
             {field} email: string
             {field} password: string
-            {field} registerAt: DateTimeInterface
-        }
-
-        class SnowBoarder {
-
+            {field} create_at: DateTimeInterface
         }
 
         class Admin 
@@ -18,28 +12,42 @@ package "Entity" #eeeeee {
         class Category {
             {field} id: int
             {field} name: string
+            {field} slug: string
         }
         
         class Trick {
             {field} id: int
             {field} name: string
+            {field} slug: string
             {field} description: string
             {field} publishedAt: DateTimeInterface
         }
 
-        class Image 
-        class Video
-        class Comment
+        class Image {
+            {field} id: int
+            {field} title: string
+            {field} path: string
+        }
 
-        User <|-- SnowBoarder
-        User <|-- Admin
+        class Video {
+            {field} id: int
+            {field} title: string
+            {field} path: string
+        }
 
-        User "One" o-- "One" Image : To
-        SnowBoarder "One" *-- "Many" Trick : Author
+        class Comment {
+            {field} id: int
+            {field} publishedAt: DateTimeInterface
+            {field} comment: string
+        }
 
-        Trick "One" *-- "Many" Category : To
-        Trick "One" o-- "Many" Image : To
-        Trick "One" o-- "Many" Video : To
-        Trick "One" o-- "Many" Comment : To
-    }
+        User <|-- Admin : Extension
+
+        User "1" *-- "1" Image : composition
+        User "1" -- "0..*" Trick
+
+        Category "1" o-- "0..*" Trick : aggregation
+        Trick "1" *-- "1..*" Image : composition
+        Trick "1" *-- "0..*" Video : composition
+        Trick "1" *-- "0..*" Comment : composition
 @enduml
