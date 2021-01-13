@@ -11,7 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class TrickController extends AbstractController
 {
 
-
     /**
      * @Route("/", name="home", methods={"GET"})
      */

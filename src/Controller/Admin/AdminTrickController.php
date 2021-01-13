@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Picture;
 use App\Entity\Trick;
 use App\Repository\TrickRepository;
 use App\Form\TrickType;
@@ -9,6 +10,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Mime\MimeTypes;
 
 class AdminTrickController extends AbstractController
 {
@@ -18,10 +21,14 @@ class AdminTrickController extends AbstractController
      */
     private $repository;
 
-    public function __construct(TrickRepository $repository, EntityManagerInterface $em)
-    {
+    public function __construct(
+        TrickRepository $repository,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger
+    ) {
         $this->repository = $repository;
         $this->em = $em;
+        $this->slugger = $slugger;
     }
 
     /**
@@ -44,6 +51,10 @@ class AdminTrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            //TODO Bonne pratique, déplacer dans un ImageListener ?
+            $this->_addPictures($form, $trick);
+
             $this->em->flush();
             return $this->redirectToRoute('admin.trick.index');
         }
@@ -60,17 +71,65 @@ class AdminTrickController extends AbstractController
     public function create(Request $request)
     {
         $trick = new Trick();
+
+        //TODO Validation sur le nom, si pas déjà exsistant.
+        $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
+
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->persist($trick);
+
+            //TODO Bonne pratique, déplacer dans un ImageListener ?
+            $this->_addPictures($form, $trick);
+
+            $this->em->persist($trick); // Also persist pictures by cascade.
             $this->em->flush();
             return $this->redirectToRoute('admin.trick.index');
         }
 
         return $this->render('admin/trick/create.html.twig', [
             'trick' => $trick,
-            'formView' => $form->createView()
+            'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("admin/trick/pictures/list/{id}", name="admin.trick.pictures.list")
+     */
+    public function pictures_list($id, TrickRepository $trickRepository)
+    {
+        $trick = $trickRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        return $this->render('admin/trick/pictures.html.twig', [
+            'trick' => $trick,
+            'pictures' => $trick->getPictures()
+        ]);
+    }
+
+    private function _addPictures($form, $trick)
+    {
+        // TODO move to Listener
+        // Add pictures uploaded
+        $pictures = $form->get('pictures')->getData();
+
+        if (!empty($pictures)) {
+            foreach ($pictures as $picture) {
+                // Save file.
+                $filename = md5(uniqid()) . '.' . $picture->guessExtension(); // Require php.ini : extension=fileinfo
+                $picture->move(
+                    $this->getParameter('pictures_directory'),
+                    $filename
+                );
+
+                // Create Picture entity
+                $pictureEntity = new Picture;
+                $pictureEntity->setName($filename);
+                $trick->addPicture($pictureEntity);
+            }
+        }
+
+        return $trick;
     }
 }

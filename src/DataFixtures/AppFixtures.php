@@ -67,7 +67,7 @@ class AppFixtures extends Fixture
                     ->setDescription($faker->text(150))
                     ->setCreatedAt(new \DateTime)
                     ->setSlug($this->slugger->slug(strtolower($trick->getName())))
-                    ->setMainPicture($unsplash_pictures[0])
+                    //->setMainPicture($unsplash_pictures[0])
                     ->setCategory($category);
 
                 $manager->persist($trick);

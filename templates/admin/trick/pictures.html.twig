@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<div class="container mt-4">
+		<h1>{{ trick.name }}</h1>
+		<div class="container">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item">
+					<a href="{{ path('admin.trick.index') }}">Admin</a>
+				</li>
+				<li class="breadcrumb-item">
+					<a href="#">{{ trick.name }}</a>
+				</li>
+			</ol>
+
+			<h2>Galerie de photo</h2>
+			<div class='row'>
+				{% for picture in pictures %}
+					<div class="col-3">
+						<p><img src="{{ asset('uploads/' ~ picture.name) }}" alt="Image" width="150"/></p>
+						<p>
+							<a href="#">Supprimer l'image</a>
+						</p>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TrickRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -35,11 +37,6 @@ class Trick
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $mainPicture;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     private $slug;
 
     /**
@@ -47,9 +44,15 @@ class Trick
      */
     private $category;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="trick", orphanRemoval=true, cascade={"persist"})
+     */
+    private $pictures;
+
     public function __construct()
     {
         $this->created_at = new \DateTime();
+        $this->pictures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -93,18 +96,6 @@ class Trick
         return $this;
     }
 
-    public function getMainPicture(): ?string
-    {
-        return $this->mainPicture;
-    }
-
-    public function setMainPicture(string $mainPicture): self
-    {
-        $this->mainPicture = $mainPicture;
-
-        return $this;
-    }
-
     public function getSlug(): ?string
     {
         return $this->slug;
@@ -125,6 +116,36 @@ class Trick
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Picture[]
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
+    }
+
+    public function addPicture(Picture $picture): self
+    {
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures[] = $picture;
+            $picture->setTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removePicture(Picture $picture): self
+    {
+        if ($this->pictures->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getTrick() === $this) {
+                $picture->setTrick(null);
+            }
+        }
 
         return $this;
     }
