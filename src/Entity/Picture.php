@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\PictureRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=PictureRepository::class)
+ * @ORM\EntityListeners({"App\EntityListener\PictureListener"})
  */
 class Picture
 {
@@ -18,13 +20,22 @@ class Picture
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @var string|null
+     * @ORM\Column
      */
-    private $name;
+    private $path;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="pictures")
-     * @ORM\JoinColumn(nullable=false)
+     * @var UploadedFile|null
+     * @Assert\Image
+     * @Assert\NotNull(groups={"add"})
+     */
+    private $uploadedFile;
+
+    /**
+     * @var Trick|null
+     * @ORM\ManyToOne(targetEntity="Trick", inversedBy="pictures")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $trick;
 
@@ -33,27 +44,51 @@ class Picture
         return $this->id;
     }
 
-    public function getName(): ?string
+    /**
+     * @return null|string
+     */
+    public function getPath(): ?string
     {
-        return $this->name;
+        return $this->path;
     }
 
-    public function setName(string $name): self
+    /**
+     * @param null|string $path
+     */
+    public function setPath(?string $path): void
     {
-        $this->name = $name;
-
-        return $this;
+        $this->path = $path;
     }
 
+    /**
+     * @return null|UploadedFile
+     */
+    public function getUploadedFile(): ?UploadedFile
+    {
+        return $this->uploadedFile;
+    }
+
+    /**
+     * @param null|UploadedFile $uploadedFile
+     */
+    public function setUploadedFile(?UploadedFile $uploadedFile): void
+    {
+        $this->uploadedFile = $uploadedFile;
+    }
+
+    /**
+     * @return Trick|null
+     */
     public function getTrick(): ?Trick
     {
         return $this->trick;
     }
 
-    public function setTrick(?Trick $trick): self
+    /**
+     * @param Trick|null $trick
+     */
+    public function setTrick(?Trick $trick): void
     {
         $this->trick = $trick;
-
-        return $this;
     }
 }

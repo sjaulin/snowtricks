@@ -11,6 +11,8 @@ services:
   _defaults:
     autowire: true # Automatically injects dependencies in your services.
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    bind:
+      $uploadDirAbsolutePath: "%pictures_directory%"
 
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name
@@ -28,5 +30,9 @@ services:
     resource: "../src/Controller/"
     tags: ["controller.service_arguments"]
 
-  # add more service definitions when explicit configuration is needed
-  # please note that last definitions always *replace* previous ones
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+  App\EntityListener\:
+    resource: "../src/EntityListener"
+    tags:
+      - { name: doctrine.orm.entity_listener }

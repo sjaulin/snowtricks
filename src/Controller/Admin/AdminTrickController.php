@@ -6,7 +6,6 @@ use App\Entity\Picture;
 use App\Entity\Trick;
 use App\Repository\TrickRepository;
 use App\Form\TrickType;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,11 +22,9 @@ class AdminTrickController extends AbstractController
 
     public function __construct(
         TrickRepository $repository,
-        EntityManagerInterface $em,
         SluggerInterface $slugger
     ) {
         $this->repository = $repository;
-        $this->em = $em;
         $this->slugger = $slugger;
     }
 
@@ -43,47 +40,23 @@ class AdminTrickController extends AbstractController
     }
 
     /**
-     * @Route("/admin/trick/edit/{id}", name="admin.trick.edit")
-     */
-    public function edit(Trick $trick, Request $request)
-    {
-        $form = $this->createForm(TrickType::class, $trick);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            //TODO Bonne pratique, déplacer dans un ImageListener ?
-            $this->_addPictures($form, $trick);
-
-            $this->em->flush();
-            return $this->redirectToRoute('admin.trick.index');
-        }
-
-        return $this->render('admin/trick/edit.html.twig', [
-            'trick' => $trick,
-            'form' => $form->createView()
-        ]);
-    }
-
-    /**
      * @Route("/admin/trick/create", name="admin.trick.create")
      */
     public function create(Request $request)
     {
         $trick = new Trick();
 
-        //TODO Validation sur le nom, si pas déjà exsistant.
-        $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
-
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            //TODO Validation sur le nom, si pas déjà exsistant.
+            $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
 
             //TODO Bonne pratique, déplacer dans un ImageListener ?
             $this->_addPictures($form, $trick);
 
-            $this->em->persist($trick); // Also persist pictures by cascade.
-            $this->em->flush();
+            $this->getDoctrine()->getManager()->persist($trick); // Also persist pictures by cascade ?
+            $this->getDoctrine()->getManager()->persist->flush();
             return $this->redirectToRoute('admin.trick.index');
         }
 
@@ -93,9 +66,40 @@ class AdminTrickController extends AbstractController
         ]);
     }
 
+
+    /**
+     * @Route("/admin/trick/edit/{id}", name="admin.trick.edit")
+     */
+    public function edit(Trick $trick, Request $request)
+    {
+        $form = $this->createForm(TrickType::class, $trick);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            //TODO Validation sur le nom, si pas déjà exsistant.
+            $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
+
+            //TODO Bonne pratique, déplacer dans un ImageListener ?
+            $this->_addPictures($form, $trick);
+
+            $this->getDoctrine()->getManager()->persist($trick);
+            $this->getDoctrine()->getManager()->flush();
+
+            $this->em->flush();
+            return $this->redirectToRoute('admin.trick.index');
+        }
+
+        return $this->render('admin/trick/edit.html.twig', [
+            'trick' => $trick,
+            'pictures' => $trick->getPictures(),
+            'form' => $form->createView()
+        ]);
+    }
+
     /**
      * @Route("admin/trick/pictures/list/{id}", name="admin.trick.pictures.list")
      */
+    /*
     public function pictures_list($id, TrickRepository $trickRepository)
     {
         $trick = $trickRepository->findOneBy([
@@ -107,7 +111,7 @@ class AdminTrickController extends AbstractController
             'pictures' => $trick->getPictures()
         ]);
     }
-
+*/
     private function _addPictures($form, $trick)
     {
         // TODO move to Listener

@@ -6,6 +6,7 @@ use App\Repository\TrickRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TrickRepository::class)
@@ -45,7 +46,9 @@ class Trick
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="trick", orphanRemoval=true, cascade={"persist"})
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="Picture", mappedBy="trick", orphanRemoval=true, cascade={"persist"})
+     * @Assert\Valid
      */
     private $pictures;
 
@@ -128,25 +131,27 @@ class Trick
         return $this->pictures;
     }
 
-    public function addPicture(Picture $picture): self
+    /**
+     * @param Picture $picture
+     */
+    public function addPicture(Picture $picture)
     {
-        if (!$this->pictures->contains($picture)) {
-            $this->pictures[] = $picture;
-            $picture->setTrick($this);
-        }
-
+        $picture->setTrick($this);
+        $this->picture->add($picture);
         return $this;
     }
 
-    public function removePicture(Picture $picture): self
+    public function removePicture(Picture $picture)
     {
-        if ($this->pictures->removeElement($picture)) {
-            // set the owning side to null (unless already changed)
-            if ($picture->getTrick() === $this) {
-                $picture->setTrick(null);
-            }
-        }
+        $picture->setTrick(null);
+        $this->images->removeElement($picture);
+    }
 
-        return $this;
+    /**
+     * @param Collection $pictures
+     */
+    public function setPictures(Collection $pictures): void
+    {
+        $this->pictures = $pictures;
     }
 }
