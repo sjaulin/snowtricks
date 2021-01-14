@@ -75,8 +75,9 @@ class AdminTrickController extends AbstractController
     /**
      * @Route("/admin/trick/create", name="admin.trick.create")
      */
-    public function create(Trick $trick, Request $request)
+    public function create(Request $request)
     {
+        $trick = new Trick();
 
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
