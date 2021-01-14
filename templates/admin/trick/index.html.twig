@@ -15,9 +15,13 @@
 			<tbody>
 				{% for trick in tricks %}
 					<tr>
-						<td>{{ trick.name }}</td>
 						<td>
-							<a href="{{ path('admin.trick.edit', {id: trick.id}) }}" class="btn btn-secondary">Editer</a>
+							<a href="{{ path('trick.show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">{{ trick.name }}</a>
+						</td>
+						<td>
+							<a href="{{ path('admin.trick.edit', {id: trick.id}) }}" class="btn btn-secondary">Modifier la figure</a>
+							<a href="{{ path('admin.trick.edit', {id: trick.id}) }}" class="btn btn-secondary">Ajouter un média</a>
+							<a href="{{ path('admin.trick.pictures.list', {id: trick.id}) }}" class="btn btn-secondary">Supprimer un média</a>
 						</td>
 					</tr>
 				{% endfor %}

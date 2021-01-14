@@ -19,7 +19,7 @@ class TrickType extends AbstractType
             ->add('name', TextType::class)
             ->add('description')
             ->add('pictures', FileType::class, [
-                'label' => false,
+                'label' => 'Ajouter une photo',
                 'multiple' => true,
                 'mapped' => false, // dot not link to database
                 'required' => false

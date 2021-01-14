@@ -9,21 +9,25 @@
 					<a href="{{ path('admin.trick.index') }}">Admin</a>
 				</li>
 				<li class="breadcrumb-item">
-					<a href="#">{{ trick.name }}</a>
+					<a href="{{ path('trick.show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">{{ trick.name }}</a>
 				</li>
 			</ol>
 
 			<h2>Galerie de photo</h2>
+			{% if pictures is empty %}
+				<p>Aucune photo pour le moment.</p>
+			{% endif %}
 			<div class='row'>
 				{% for picture in pictures %}
 					<div class="col-3">
 						<p><img src="{{ asset('uploads/' ~ picture.name) }}" alt="Image" width="150"/></p>
 						<p>
-							<a href="#">Supprimer l'image</a>
+							<a href="{{ path('admin.trick.picture.delete', {id: picture.id}) }}">Supprimer l'image</a>
 						</p>
 					</div>
 				{% endfor %}
 			</div>
+			<a href="{{ path('admin.trick.edit', {id: trick.id}) }}" class="btn btn-secondary">Ajouter un média</a>
 		</div>
 	</div>
 {% endblock %}
