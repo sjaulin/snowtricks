@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\Mime\MimeTypes;
 
 class AdminTrickController extends AbstractController
 {
@@ -139,7 +138,7 @@ class AdminTrickController extends AbstractController
             $trick->removePicture($picture);
             $this->em->flush();
             // TODO Message "ok"
-            return $this->redirectToRoute('admin.trick.index');
+            return $this->redirectToRoute('admin.trick.pictures.list', ['id' => $trick->getId()]);
         }
 
         throw $this->createNotFoundException('This picture does not exist');
