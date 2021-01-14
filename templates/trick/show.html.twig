@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% set picture = trick.pictures|first %}
+
 {% block title %}
 	{{trick.name}}
 	-
@@ -23,12 +25,17 @@
 
 		<div class="row">
 			<div class="col-4">
-				<img class="img-fluid" src="{{trick.mainPicture}}" alt="{{trick.name}}">
+				<img src="{{ asset('uploads/' ~ picture.name) }}" alt="Photo {{ trick.name }}"/>
 			</div>
 			<div class="col">
 				{% include "trick/_category_badge.html.twig" %}
 				<p>{{trick.description}}</p>
 			</div>
 		</div>
+
+		{% for picture in trick.pictures|slice(1) %}
+			<img src="{{ asset('uploads/' ~ picture.name) }}" alt="Photo {{ trick.name }}" width="150"/>
+		{% endfor %}
+
 	</div>
 {% endblock %}

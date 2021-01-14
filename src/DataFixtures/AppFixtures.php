@@ -4,17 +4,21 @@ namespace App\DataFixtures;
 
 use Faker\Factory;
 use App\Entity\Trick;
+use App\Entity\Picture;
 use App\Entity\Category;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class AppFixtures extends Fixture
 {
+    private $params;
     protected $slugger;
 
-    public function __construct(SluggerInterface $slugger)
+    public function __construct(ParameterBagInterface $params, SluggerInterface $slugger)
     {
+        $this->params = $params;
         $this->slugger = $slugger;
     }
 
@@ -47,8 +51,9 @@ class AppFixtures extends Fixture
             'https://cdn.pixabay.com/photo/2013/12/12/21/28/snowboard-227540_960_720.jpg',
             'https://cdn.pixabay.com/photo/2018/03/10/15/22/snow-3214256_960_720.jpg'
         );
+        $unsplash_offset = 0;
 
-        for ($c = 0; $c < 4; $c++) {
+        for ($c = 0; $c < 2; $c++) {
 
             // Categories
             $category = new Category();
@@ -58,17 +63,30 @@ class AppFixtures extends Fixture
             $manager->flush();
 
             // Tricks
-            for ($i = 0; $i < 5; $i++) {
-                shuffle($unsplash_pictures);
-
+            for ($t = 0; $t < 5; $t++) {
                 $trick = new Trick();
 
                 $trick->setName(ucwords($faker->word))
                     ->setDescription($faker->text(150))
                     ->setCreatedAt(new \DateTime)
                     ->setSlug($this->slugger->slug(strtolower($trick->getName())))
-                    //->setMainPicture($unsplash_pictures[0])
                     ->setCategory($category);
+
+                // Pictures
+                shuffle($unsplash_pictures);
+
+                for ($p = 0; $p < 2; $p++) {
+                    $unsplash_offset++;
+                    $unsplash_url = !empty($unsplash_pictures[$unsplash_offset]) ? $unsplash_pictures[$unsplash_offset] : $unsplash_pictures[0];
+
+                    $file_name = $c . '_' . $t . '_' . $p . '.jpg';
+                    $filename_path = $this->params->get('pictures_directory') . '/' . $file_name;
+                    file_put_contents($filename_path . '', file_get_contents($unsplash_url));
+
+                    $picture = new Picture;
+                    $picture->setName($file_name);
+                    $trick->addPicture($picture);
+                }
 
                 $manager->persist($trick);
             }
