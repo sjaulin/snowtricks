@@ -6,12 +6,19 @@ use App\Repository\TrickRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=TrickRepository::class)
+ * @UniqueEntity("name", message="La figure {{ value }} existe déjà")
  */
 class Trick
 {
+
+    const constraint_name_length_min = 2;
+    const constraint_name_length_max = 191;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -20,7 +27,13 @@ class Trick
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=Trick::constraint_name_length_max, unique=true)
+     * @Assert\NotBlank(message="Le nom est obligatoire")
+     * @Assert\Length(
+     * min=Trick::constraint_name_length_min, 
+     * max=Trick::constraint_name_length_max, 
+     * minMessage="Le nom doit faire au moins {{ limit }} caractères", 
+     * maxMessage="Le nom doit faire au maximum {{ limit }} caractères")
      */
     private $name;
 
