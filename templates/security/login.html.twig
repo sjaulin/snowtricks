@@ -8,7 +8,7 @@
 	<div class="container">
 
 		{% if error %}
-			<div class="alert alert-danger">{{ error.message }}</div>
+			<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 		{% endif %}
 
 		<h1>Connexion</h1>
