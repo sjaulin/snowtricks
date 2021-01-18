@@ -7,6 +7,10 @@
 
 	<div class="container">
 
+		{% if error %}
+			<div class="alert alert-danger">{{ error.message }}</div>
+		{% endif %}
+
 		<h1>Connexion</h1>
 
 		{{ form_start(form) }}
@@ -17,6 +21,4 @@
 		{{ form_end(form) }}
 
 	</div>
-
-
 {% endblock %}
