@@ -63,6 +63,9 @@ class LoginFormAuthenticator extends AbstractGuardAuthenticator
     {
         // On enregistre l'exception levé dans les attributs pour la retrouver dans le getLastAuthenticationError du securityController.
         $request->attributes->set(Security::AUTHENTICATION_ERROR, $exception);
+
+        // On enregistre de dernier username pour le retrouver dans getLastUsername du secirityController
+        $request->attributes->set(Security::LAST_USERNAME, $request->request->get('login'));
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
