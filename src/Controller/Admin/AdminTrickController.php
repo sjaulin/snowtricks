@@ -48,6 +48,7 @@ class AdminTrickController extends AbstractController
      */
     public function edit(Trick $trick, Request $request)
     {
+
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 

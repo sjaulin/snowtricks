@@ -6,25 +6,55 @@ use Faker\Factory;
 use App\Entity\Trick;
 use App\Entity\Picture;
 use App\Entity\Category;
+use App\Entity\User;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
     private $params;
     protected $slugger;
+    protected $encoder;
 
-    public function __construct(ParameterBagInterface $params, SluggerInterface $slugger)
-    {
+    public function __construct(
+        ParameterBagInterface $params,
+        SluggerInterface $slugger,
+        UserPasswordEncoderInterface $encoder
+    ) {
         $this->params = $params;
         $this->slugger = $slugger;
+        $this->encoder = $encoder;
     }
 
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create('fr_FR');
+
+        // ADMIN
+        $admin = new User;
+
+        // Encodera avec l'algorithm pour l'entité User indiqué dans le security.yaml
+        $hash = $this->encoder->encodePassword($admin, 'password');
+
+        $admin->setEmail('admin@gmail.com')
+            ->setPassword($hash)
+            ->setRoles(['ROLE_ADMIN']);
+        $manager->persist($admin);
+
+        // USERS
+        for ($u = 0; $u < 5; $u++) {
+            $user = new User;
+            $hash = $this->encoder->encodePassword($user, 'password');
+            $user->setEmail("User$u@gmail.com")
+                ->setPassword($hash);
+
+            $manager->persist($user);
+        }
+
+        // TRICKS
         $unsplash_pictures = array(
             'https://source.unsplash.com/QpD_ArXWKLA/960x640',
             'https://source.unsplash.com/jyoVp3TxTZk/960x640',

@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion
+{% endblock %}
+
+{% block body %}
+
+	<div class="container">
+
+		{% if error %}
+			<div class="alert alert-danger">{{ error.message }}</div>
+		{% endif %}
+
+		<h1>Connexion</h1>
+
+		{{ form_start(form) }}
+		{{ form_widget(form) }}
+
+		<button type="submit" class="btn btn-success">connexion</button>
+
+		{{ form_end(form) }}
+
+	</div>
+{% endblock %}

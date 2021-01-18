@@ -10,19 +10,26 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class TrickType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
+    public function buildForm(
+        FormBuilderInterface $builder,
+        array $options
+    ) {
+
         $builder
-            ->add('name', TextType::class)
+            ->add('name', TextType::class, [
+                'label' => 'Nom de la figure',
+                'help' => 'Doit avoir entre ' . Trick::constraint_name_length_min . ' et ' . Trick::constraint_name_length_max . ' caractères',
+            ])
             ->add('description')
             ->add('pictures', FileType::class, [
                 'label' => 'Ajouter une photo',
                 'multiple' => true,
                 'mapped' => false, // dot not link to database
-                'required' => false
+                'required' => false,
             ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
