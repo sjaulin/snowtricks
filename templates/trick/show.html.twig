@@ -25,7 +25,11 @@
 
 		<div class="row">
 			<div class="col-4">
-				<img src="{{ asset('uploads/' ~ picture.name) }}" alt="Photo {{ trick.name }}"/>
+				{% if picture is not empty %}
+					<img src="{{ asset('uploads/' ~ picture.name) }}" alt="Photo {{ trick.name }}"/>
+				{% else %}
+					<p>Pas d'image</p>
+				{% endif %}
 			</div>
 			<div class="col">
 				{% include "trick/_category_badge.html.twig" %}

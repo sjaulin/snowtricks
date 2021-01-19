@@ -4,11 +4,11 @@
 
 {% block body %}
 	<div class="container">
-		<h2>Gérer les figures</h2>
+		<h2>Gérer les tricks</h2>
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>Figure</th>
+					<th>Nom</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -19,9 +19,10 @@
 							<a href="{{ path('trick.show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">{{ trick.name }}</a>
 						</td>
 						<td>
-							<a href="{{ path('admin.trick.edit', {id: trick.id}) }}" class="btn btn-secondary">Modifier la figure</a>
-							<a href="{{ path('admin.trick.edit', {id: trick.id}) }}" class="btn btn-secondary">Ajouter un média</a>
-							<a href="{{ path('admin.trick.pictures.list', {id: trick.id}) }}" class="btn btn-secondary">Supprimer un média</a>
+							<a href="{{ path('admin.trick.edit', {id: trick.id}) }}" class="btn btn-secondary">Modifier</a>
+						</td>
+						<td>
+							<a href="{{ path('admin.trick.delete', {id: trick.id}) }}" class="btn btn-danger">Supprimer</a>
 						</td>
 					</tr>
 				{% endfor %}
