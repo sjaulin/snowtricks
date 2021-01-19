@@ -13,7 +13,7 @@ entity "user" {
     *email: varchar
     *password: varchar
     *create_at: datetime
-    is_admin: tinyint
+    roles: text
 }
 
 entity "category" {

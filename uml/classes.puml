@@ -5,6 +5,7 @@
             {field} email: string
             {field} password: string
             {field} create_at: DateTimeInterface
+            {field} roles: string
         }
 
         class Admin 

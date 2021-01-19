@@ -12,21 +12,28 @@
 		{% endblock %}
 	</head>
 	<body>
-
+		{# read and display several types of flash messages #}
+		{% for label, messages in app.flashes(['success', 'warning']) %}
+			{% for message in messages %}
+				<div class="alert alert-{{ label }}">
+					{{ message }}
+				</div>
+			{% endfor %}
+		{% endfor %}
 
 		<nav class="navbar navbar-expand-sm navbar-light bg-light">
-		<div class="container">
-			<a class="navbar-brand" href="{{ path('home') }}">Home</a>
-			<button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="collapsibleNavId">
-				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-					<li class="nav-item">
-						<a class="nav-link {% if app.request.attributes.get('_route') is defined and app.request.attributes.get('_route') == 'admin.trick.index' %}active{% endif %}" href="{{ path('admin.trick.index') }}">Admin</a>
-					</li>
-				</ul>
-			</div>
+			<div class="container">
+				<a class="navbar-brand" href="{{ path('home') }}">Home</a>
+				<button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="collapsibleNavId">
+					<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+						<li class="nav-item">
+							<a class="nav-link {% if app.request.attributes.get('_route') is defined and app.request.attributes.get('_route') == 'admin.trick.index' %}active{% endif %}" href="{{ path('admin.trick.index') }}">Admin</a>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</nav>
 

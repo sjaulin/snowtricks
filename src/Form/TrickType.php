@@ -26,7 +26,8 @@ class TrickType extends AbstractType
             ])
             ->add('description')
             ->add('pictures', FileType::class, [
-                'label' => 'Ajouter une photo',
+                'label' => 'Ajouter des photos',
+                'help' => 'Sélectionner plusieurs photos si nécessaire',
                 'multiple' => true,
                 'mapped' => false, // dot not link to database
                 'required' => false,

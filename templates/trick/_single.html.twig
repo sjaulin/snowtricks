@@ -2,12 +2,13 @@
 
 <div class='col-5'>
 	<div class='card'>
-		<a href="{{ path('trick.show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">
-			<img src="{{ asset('uploads/' ~ picture.name) }}" alt="Photo {{ trick.category.name }}" width="150"/>
-		</a>
+
+		{% if picture is not empty %}
+			<a href="{{ path('trick.show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}"><img src="{{ asset('uploads/' ~ picture.name) }}" alt="Photo {{ trick.category.name }}" width="150"/></a>
+		{% endif %}
 		<div class='card-body'>
 			<h5 class='card-title'>
-				{{ trick.name }}
+				<a href="{{ path('trick.show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">{{ trick.name }}</a>
 			</h5>
 			<span class="badge badge-info">{{ trick.category.name }}</span>
 		</div>
