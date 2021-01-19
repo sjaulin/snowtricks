@@ -14,15 +14,20 @@ security:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
+
     main:
       anonymous: true
       lazy: true
       provider: app_user_provider
+
       form_login: # Authenticator fournit avec Symfony
         login_path: security_login # Ou se trouve le formulaire
         check_path: security_login # Url d'envoi des informations de connexion
         username_parameter: login[email]
         password_parameter: login[password]
+
+      logout:
+        path: security_logout
 
       # activate different ways to authenticate
       # https://symfony.com/doc/current/security.html#firewalls-authentication
