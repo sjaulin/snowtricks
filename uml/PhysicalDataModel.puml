@@ -1,4 +1,5 @@
 @startuml PhysicalDataModel
+'see: https://plantuml.com/fr/ie-diagram
 
 ' hide the spot
 hide circle
@@ -9,11 +10,17 @@ skinparam linetype ortho
 entity "user" {
   *id: int <<generated>>
   --
-    *pseudo: varchar
     *email: varchar
     *password: varchar
-    *create_at: datetime
+    *created_datetime: datetime
     roles: text
+}
+
+entity "avatar" {
+  *id: int <<generated>>
+  --
+  *user_id: int <<FK>>
+  name: varchar
 }
 
 entity "category" {
@@ -28,6 +35,7 @@ entity "trick" {
   --
   *category_id: int <<FK>>
   *user_id: int <<FK>>
+  *created_datetime
   *name: varchar
   *slug: varchar
   *description: text
@@ -37,27 +45,28 @@ entity "comment" {
   *id: int <<generated>>
   --
   *trick_id: int <<FK>>
+  *created_datetime
   *user_id: int <<FK>>
-  *comment: text
+  *message: text
 }
 
 entity "picture" {
   *id: int <<generated>>
   --
   *trick_id: int <<FK>>
-  title: varchar
-  path: varchar
+  name: varchar
 }
 
 entity "video" {
   *id: int <<generated>>
   --
   *trick_id: int <<FK>>
-  title: varchar
-  path: varchar
+  url: varchar
 }
 
 user ||..o{ trick
+user ||..o{ avatar
+
 category ||..o{ trick
 
 trick ||..o{ comment

@@ -138,7 +138,7 @@ class AdminTrickController extends AbstractController
                     $this->_deletePictureFile($picture);
                 }
             }
-            // TODO Message "ok"
+            $this->addFlash('success', 'Le trick a été supprimé');
             return $this->redirectToRoute('admin.trick.index');
         }
 
@@ -152,7 +152,7 @@ class AdminTrickController extends AbstractController
                 // Save file.
                 $filename = md5(uniqid()) . '.' . $picture->guessExtension(); // Require php.ini : extension=fileinfo
                 $picture->move(
-                    $this->getParameter('pictures_directory'),
+                    $this->getParameter('uploads_trick_path'),
                     $filename
                 );
 
@@ -172,7 +172,7 @@ class AdminTrickController extends AbstractController
     {
         if ($picture) {
             // delete file
-            $file = $this->getParameter('pictures_directory') . '/' . $picture->getName();
+            $file = $this->getParameter('uploads_trick_directory') . '/' . $picture->getName();
             if (is_file($file)) {
                 unlink($file);
             }

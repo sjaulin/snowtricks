@@ -1,54 +1,56 @@
 @startuml Classes
+'see:https://plantuml.com/fr/class-diagram
+
         class User {
-            {field} id: int
-            {field} pseudo: string
             {field} email: string
             {field} password: string
-            {field} create_at: DateTimeInterface
+            {field} createdDatetime: DateTimeInterface
             {field} roles: string
+            {method} getRoles()
+            {method} getAvatar()
         }
 
-        class Admin 
+        class Avatar {
+            {field} name: string
+        }
 
         class Category {
-            {field} id: int
             {field} name: string
             {field} slug: string
+            {method} getTricks()
         }
         
         class Trick {
-            {field} id: int
             {field} name: string
             {field} slug: string
             {field} description: string
-            {field} publishedAt: DateTimeInterface
+            {field} createdDatetime: DateTimeInterface
+            {method} getPictures()
+            {method} getVideos()
+            {method} getComments()
         }
 
-        class Image {
-            {field} id: int
-            {field} title: string
-            {field} path: string
+        class Picture {
+            {field} name: string
         }
 
         class Video {
-            {field} id: int
-            {field} title: string
-            {field} path: string
+            {field} url: string
         }
 
         class Comment {
-            {field} id: int
-            {field} publishedAt: DateTimeInterface
-            {field} comment: string
+            {field} createdDatetime: DateTimeInterface
+            {field} message: string
+            {method} getUser()
         }
 
-        User <|-- Admin : Extension
-
-        User "1" *-- "1" Image : composition
+        User "1" *-- "1" Avatar : composition
         User "1" -- "0..*" Trick
 
         Category "1" o-- "0..*" Trick : aggregation
-        Trick "1" *-- "1..*" Image : composition
+        Trick "1" *-- "1..*" Picture : composition
         Trick "1" *-- "0..*" Video : composition
         Trick "1" *-- "0..*" Comment : composition
+
+        Comment "1" *-- "1..*" User : composition
 @enduml

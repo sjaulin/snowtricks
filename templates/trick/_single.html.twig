@@ -4,7 +4,7 @@
 	<div class='card'>
 
 		{% if picture is not empty %}
-			<a href="{{ path('trick.show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}"><img src="{{ asset('uploads/' ~ picture.name) }}" alt="Photo {{ trick.category.name }}" width="150"/></a>
+			<a href="{{ path('trick.show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}"><img src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.category.name }}" width="150"/></a>
 		{% endif %}
 		<div class='card-body'>
 			<h5 class='card-title'>

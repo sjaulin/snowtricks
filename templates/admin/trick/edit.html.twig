@@ -20,7 +20,7 @@
 		<div class="row">
 			{% for picture in pictures %}
 				<div class="col-2">
-					<p><img src="{{ asset('uploads/' ~ picture.name) }}" alt="" width="150"></p>
+					<p><img src="{{ src_trick_base ~ picture.name }}" alt="" width="150"></p>
 					<p><input name="delete_pictures[{{ picture.id }}]" type="checkbox">
 						Supprimer</p>
 				</div>
