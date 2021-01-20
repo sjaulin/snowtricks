@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -79,6 +80,12 @@ class AdminTrickController extends AbstractController
      */
     public function edit(Trick $trick, Request $request, PictureRepository $pictureRepository)
     {
+
+        $user = $this->getUser();
+
+        if ($user || $trick->getOwner() != $user) {
+            throw new AccessDeniedHttpException('Vous n\'avez pas le droit de modifier ce trick');
+        }
 
         $form = $this->createForm(TrickType::class, $trick);
 

@@ -122,11 +122,12 @@ class AppFixtures extends Fixture
             $category->setSlug($this->slugger->slug(strtolower($category->getName())));
             $manager->persist($category);
 
-            // Tricks
+            // Tricks in category
             for ($t = 0; $t < 5; $t++) {
                 $trick = new Trick();
-
+                shuffle($users_list);
                 $trick->setName(ucwords($faker->unique()->word()))
+                    ->setOwner($users_list[0])
                     ->setDescription($faker->text(150))
                     ->setCreatedAt(new \DateTime)
                     ->setSlug($this->slugger->slug(strtolower($trick->getName())))
@@ -134,7 +135,6 @@ class AppFixtures extends Fixture
 
                 // Pictures
                 shuffle($pictures_list);
-
                 for ($p = 0; $p < 2; $p++) {
                     $unsplash_url = !empty($pictures_list[$p]) ? $pictures_list[$p] : $pictures_list[0];
                     $file_name = $c . '_' . $t . '_' . $p . '.jpg';
@@ -147,8 +147,7 @@ class AppFixtures extends Fixture
 
                 // Comments
                 shuffle($users_list);
-
-                for ($u = 0; $u < 3; $u++) {
+                for ($u = 0; $u < rand(1, 3); $u++) {
                     $comment = new Comment;
                     $comment->setMessage($faker->unique()->text(150));
                     $comment->setUser($users_list[$u]);

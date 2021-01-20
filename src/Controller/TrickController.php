@@ -20,6 +20,7 @@ class TrickController extends AbstractController
      */
     public function home(TrickRepository $repository): Response
     {
+
         $tricks = $repository->findAll();
 
         return new Response($this->render('home.html.twig', [
@@ -54,6 +55,7 @@ class TrickController extends AbstractController
      */
     public function show($slug, Request $request, TrickRepository $trickRepository): Response
     {
+
         $trick = $trickRepository->findOneBy([
             'slug' => $slug
         ]);
@@ -67,7 +69,8 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            dd('Add comment');
+            $comment->setTrick($trick);
+            dd($comment);
         }
 
         return $this->render('trick/show.html.twig', [
