@@ -110,21 +110,25 @@ class TrickController extends AbstractController
         ]);
 
         if (!$trick) {
-            throw $this->createNotFoundException('trick-not-found');
+            throw $this->createNotFoundException('Le trick est iconnu');
         }
 
         $comment = new Comment;
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($this->isGranted('ROLE_USER') && $form->isSubmitted() && $form->isValid()) {
             $comment->setTrick($trick);
-            dd($comment);
+            $comment->setUser($this->getUser());
+            $this->em->persist($comment);
+            $this->em->flush();
+            $this->addFlash('success', 'Le commentaire a bien été ajouté');
         }
 
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'comments' => $trick->getComments()
         ]);
     }
 

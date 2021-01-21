@@ -25,6 +25,7 @@ security:
         check_path: security_login # Url d'envoi des informations de connexion
         username_parameter: login[email]
         password_parameter: login[password]
+        #use_referer: true
 
       logout:
         path: security_logout

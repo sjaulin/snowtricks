@@ -49,13 +49,38 @@
 			</div>
 		</div>
 
-		{% for picture in trick.pictures|slice(1) %}
-			<img src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}" width="150"/>
-		{% endfor %}
+		<div>
+			{% for picture in trick.pictures|slice(1) %}
+				<img src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}" width="150"/>
+			{% endfor %}
+		</div>
 
-		{{ form_start(form) }}
-		{{ form_widget(form) }}
+		<div>
+			{% for comment in comments %}
+				<div class="card" style="width: 50%;">
+					<div class="card-body">
+						<h5 class="card-title">{{ comment.user.email }}</h5>
+						<h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+						<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+						<a href="#" class="card-link">Card link</a>
+						<a href="#" class="card-link">Another link</a>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+		<div>
+			{% if is_granted('ROLE_USER') %}
+				{{ form_start(form) }}
+				{{ form_widget(form) }}
 
-		<button class="btn btn-primary">Ajouter</button>
-		{{ form_end(form) }}</div>
-{% endblock %}
+				<button class="btn btn-primary">Enregistrer</button>
+				{{ form_end(form) }}</div>
+		{% else %}
+			<div class="alert alert-primary" role="alert">
+				Pour ajouter un commentaire, vous devez vous
+				<a href="{{ path('security_login') }}">connecter</a>
+			</div>
+		{% endif %}
+	</div>
+
+</div>{% endblock %}
