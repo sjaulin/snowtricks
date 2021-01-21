@@ -201,7 +201,7 @@ class TrickController extends AbstractController
                 }
             }
             $this->addFlash('success', 'Le trick a été supprimé');
-            return $this->redirectToRoute('admin.trick.index');
+            return $this->redirectToRoute('home');
         }
 
         throw $this->createNotFoundException('Trick does not exist');

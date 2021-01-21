@@ -13,9 +13,9 @@
 	</head>
 	<body>
 		{# read and display several types of flash messages #}
-		{% for label, messages in app.flashes(['success', 'warning']) %}
+		{% for type, messages in app.flashes() %}
 			{% for message in messages %}
-				<div class="alert alert-{{ label }}">
+				<div class="alert alert-{{ type }}">
 					{{ message }}
 				</div>
 			{% endfor %}
@@ -29,12 +29,23 @@
 				</button>
 				<div class="collapse navbar-collapse" id="collapsibleNavId">
 					<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-						<li class="nav-item">
-							<a class="nav-link {% if app.request.attributes.get('_route') is defined and app.request.attributes.get('_route') == 'admin.trick.index' %}active{% endif %}" href="{{ path('admin.trick.index') }}">Admin</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link {% if app.request.attributes.get('_route') is defined and app.request.attributes.get('_route') == 'security_loginx' %}active{% endif %}" href="{{ path('security_login') }}">Login</a>
-						</li>
+						{% if is_granted('ROLE_ADMIN') == true %}
+							<li class="nav-item">
+								<a href="admin" class="nav-link">Admin</a>
+							</li>
+						{% endif %}
+						{% if app.user %}
+							<li class="nav-item">
+								<a href="{{ path('security_logout') }}" class="btn btn-danger">Logout</a>
+							</li>
+						{% else %}
+							<li class="nav-item">
+								<a href="#" class="nav-link">Inscription</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('security_login') }}" class="btn btn-success">Login</a>
+							</li>
+						{% endif %}
 					</ul>
 				</div>
 			</div>
