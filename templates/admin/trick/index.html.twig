@@ -16,13 +16,13 @@
 				{% for trick in tricks %}
 					<tr>
 						<td>
-							<a href="{{ path('trick.show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">{{ trick.name }}</a>
+							<a href="{{ path('trick_show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">{{ trick.name }}</a>
 						</td>
 						<td>
-							<a href="{{ path('admin.trick.edit', {id: trick.id}) }}" class="btn btn-secondary">Modifier</a>
+							<a href="{{ path('trick_edit', {id: trick.id}) }}" class="btn btn-secondary">Modifier</a>
 						</td>
 						<td>
-							<a href="{{ path('admin.trick.delete', {id: trick.id}) }}" class="btn btn-danger">Supprimer</a>
+							<a href="{{ path('trick_delete', {id: trick.id}) }}" class="btn btn-danger">Supprimer</a>
 						</td>
 					</tr>
 				{% endfor %}
@@ -30,7 +30,7 @@
 		</table>
 
 		<div class="container">
-			<a href="{{ path('admin.trick.create') }}" class="btn btn-primary">Ajouter une figure</a>
+			<a href="{{ path('trick_new') }}" class="btn btn-primary">Ajouter un trick</a>
 		</div>
 
 	</div>

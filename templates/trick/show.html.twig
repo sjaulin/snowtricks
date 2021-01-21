@@ -15,7 +15,7 @@
 				<a href="{{ path('home') }}">Accueil</a>
 			</li>
 			<li class="breadcrumb-item">
-				<a href="{{ path('trick.list', {'slug' : trick.category.slug }) }}">{{ trick.category.name }}</a>
+				<a href="{{ path('trick_list', {'slug' : trick.category.slug }) }}">{{ trick.category.name }}</a>
 			</li>
 			<li class="breadcrumb-item active" aria-current="page">{{ trick.name }}</li>
 		</ol>
