@@ -1,0 +1,18 @@
+<!-- Button trigger modal -->
+<a href="#modal{{ picture.id }}" data-toggle="modal">
+	<img src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}" width="150"/>
+</a>
+
+<!-- Modal -->
+<div class="modal fade" id="modal{{ picture.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<img class="img-fluid" src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}"/>
+			</div>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+	</div>
+</div>

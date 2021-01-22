@@ -52,6 +52,11 @@ class User implements UserInterface
      */
     private $tricks;
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=false)
+     */
+    private $pseudo;
+
     public function __construct()
     {
         $this->tricks = new ArrayCollection();
@@ -208,6 +213,18 @@ class User implements UserInterface
                 $trick->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(string $pseudo): self
+    {
+        $this->pseudo = $pseudo;
 
         return $this;
     }

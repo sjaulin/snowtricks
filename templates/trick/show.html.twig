@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block body %}
+
 	<div class="container">
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item">
@@ -22,23 +23,26 @@
 
 
 		<h1>{{trick.name}}
-			{% if is_granted('ENTITY_EDIT', trick) %}
-				<a href="{{ path('trick_edit', {'id' : trick.id }) }}" class="badge badge-secondary">
+			{% if is_granted('ENTITY_EDIT', trick) %}{% endif %}
+			<button type="button" class="btn btn-primary btn-sm" title="Modifier">
+				<a href="{{ path('trick_edit', {'id' : trick.id }) }}" class="text-light">
 					<i class="fa fa-pen" aria-hidden="true"></i>
 				</a>
-			{% endif %}
-
+			</button>
 			{% if is_granted('ENTITY_DELETE', trick) %}
-				<a href="{{ path('trick_delete', {'id' : trick.id }) }}" class="badge badge-danger">
-					<i class="fa fa-trash" aria-hidden="true"></i>
-				</a>
+				<button type="button" class="btn btn-danger btn-sm" title="Supprimer">
+					<a href="{{ path('trick_delete', {'id' : trick.id }) }}" class="text-light">
+						<i class="fa fa-trash" aria-hidden="true"></i>
+					</a>
+				</button>
 			{% endif %}
 		</h1>
 
+
 		<div class="row">
-			<div class="col-4">
+			<div class="col sm-12">
 				{% if picture is not empty %}
-					<img src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}"/>
+					<img class="img-fluid" src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}"/>
 				{% else %}
 					<p>Pas d'image</p>
 				{% endif %}
@@ -48,39 +52,45 @@
 				<p>{{trick.description}}</p>
 			</div>
 		</div>
-
-		<div>
+		<h2>Photos</h2>
+		<div id="pictures">
 			{% for picture in trick.pictures|slice(1) %}
-				<img src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}" width="150"/>
+				{% include "trick/_modal.html.twig" %}
 			{% endfor %}
 		</div>
 
-		<div>
+		<h2>Commentaires</h2>
+		<div id="comments">
 			{% for comment in comments %}
-				<div class="card" style="width: 50%;">
+				<div class="comment card mt-2 mb-2">
 					<div class="card-body">
-						<h5 class="card-title">{{ comment.user.email }}</h5>
-						<h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-						<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-						<a href="#" class="card-link">Card link</a>
-						<a href="#" class="card-link">Another link</a>
+						<h5 class="card-title">
+							{% if comment.user.avatar is not empty %}
+								<img src="{{ asset(src_user_base ~ comment.user.avatar.name) }}" class="avatar rounded-circle" alt="{{ comment.user.pseudo }}">
+							{% endif %}
+							@{{ comment.user.pseudo }}</h5>
+						<h6 class="card-subtitle mb-2 text-muted">{{ comment.createdAt|date("m/d/Y") }}</h6>
+						<p class="card-text">{{ comment.message }}.</p>
 					</div>
 				</div>
 			{% endfor %}
-		</div>
-		<div>
-			{% if is_granted('ROLE_USER') %}
-				{{ form_start(form) }}
-				{{ form_widget(form) }}
 
-				<button class="btn btn-primary">Enregistrer</button>
-				{{ form_end(form) }}</div>
-		{% else %}
-			<div class="alert alert-primary" role="alert">
-				Pour ajouter un commentaire, vous devez vous
-				<a href="{{ path('security_login') }}">connecter</a>
+			<div id="comment_new">
+				{% if is_granted('ROLE_USER') %}
+					{{ form_start(form) }}
+					{{ form_widget(form) }}
+
+					<button class="btn btn-primary">Enregistrer</button>
+					{{ form_end(form) }}
+				{% else %}
+					<div class="alert alert-primary" role="alert">
+						Pour ajouter un commentaire, vous devez vous
+						<a href="{{ path('security_login') }}">connecter</a>
+					</div>
+				{% endif %}
 			</div>
-		{% endif %}
-	</div>
+		</div>
 
-</div>{% endblock %}
+
+	</div>
+{% endblock %}

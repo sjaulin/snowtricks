@@ -10,24 +10,29 @@
 		<div class="row">
 			<div class="col">
 				{{ form_row(form.name)}}
+				{{ form_row(form.description)}}
+				{{ form_row(form.category)}}
 			</div>
 			<div class="col">
+				<h3>Photos</h3>
+				<div class="row">
+					{% for picture in pictures %}
+						<div class="col-3">
+							<p><img src="{{ src_trick_base ~ picture.name }}" alt="" width="100"></p>
+							<p><input name="delete_pictures[{{ picture.id }}]" type="checkbox">
+								Supprimer</p>
+						</div>
+					{% else %}
+						Pas de photo
+					{% endfor %}
+				</div>
+				{{ form_row(form.pictures)}}
 
-				{{ form_widget(form) }}
+
 			</div>
 		</div>
 
-		<div class="row">
-			{% for picture in pictures %}
-				<div class="col-2">
-					<p><img src="{{ src_trick_base ~ picture.name }}" alt="" width="150"></p>
-					<p><input name="delete_pictures[{{ picture.id }}]" type="checkbox">
-						Supprimer</p>
-				</div>
-			{% else %}
-				Pas de photo
-			{% endfor %}
-		</div>
+		<div class="row"></div>
 
 		<button class="btn btn-primary">Enregistrer</button>
 		{{ form_end(form) }}

@@ -55,27 +55,29 @@ class AppFixtures extends Fixture
 
         $admin->setEmail('admin@gmail.com')
             ->setPassword($hash)
-            ->setRoles(['ROLE_ADMIN']);
+            ->setRoles(['ROLE_ADMIN'])
+            ->setPseudo('admin');
         $manager->persist($admin);
 
         // USERS
-        $avatar_list = array(
+        $fakerUsers = array(
             'https://images.unsplash.com/photo-1506803682981-6e718a9dd3ee?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=c3a31eeb7efb4d533647e3cad1de9257',
             'https://images.unsplash.com/photo-1495147334217-fcb3445babd5?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=7dc81c222437ff6fed90bfb04c491d6f',
             'https://images.unsplash.com/photo-1509783236416-c9ad59bae472?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ',
             'https://images.unsplash.com/photo-1510227272981-87123e259b17?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=3759e09a5b9fbe53088b23c615b6312e',
             'https://images.unsplash.com/photo-1507120878965-54b2d3939100?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=99fbace66d1bfa48c9c6dc8afcac3aab'
         );
-        $users_list = [];
+        $users = [];
         for ($u = 0; $u < 5; $u++) {
             $avatar = new Picture;
             $user = new User;
             $hash = $this->encoder->encodePassword($user, 'password');
             $user->setEmail("User$u@gmail.com")
+                ->setPseudo($faker->unique()->firstName())
                 ->setPassword($hash);
 
             $file_name = 'fake_' . $u . '.jpg';
-            if ($this->_upload_file($avatar_list[$u], $this->params->get('uploads_user_path'), $file_name)) {
+            if ($this->_upload_file($fakerUsers[$u], $this->params->get('uploads_user_path'), $file_name)) {
                 $avatar = new Avatar;
                 $avatar->setName($file_name);
                 $user->setAvatar($avatar);
@@ -83,7 +85,7 @@ class AppFixtures extends Fixture
             }
 
             $manager->persist($user);
-            $users_list[] = $user;
+            $users[] = $user;
         }
 
         // TRICKS
@@ -125,9 +127,9 @@ class AppFixtures extends Fixture
             // Tricks in category
             for ($t = 0; $t < 5; $t++) {
                 $trick = new Trick();
-                shuffle($users_list);
+                shuffle($users);
                 $trick->setName(ucwords($faker->unique()->word()))
-                    ->setOwner($users_list[0])
+                    ->setOwner($users[0])
                     ->setDescription($faker->text(150))
                     ->setCreatedAt(new \DateTime)
                     ->setSlug($this->slugger->slug(strtolower($trick->getName())))
@@ -146,11 +148,11 @@ class AppFixtures extends Fixture
                 }
 
                 // Comments
-                shuffle($users_list);
+                shuffle($users);
                 for ($u = 0; $u < rand(1, 3); $u++) {
                     $comment = new Comment;
                     $comment->setMessage($faker->unique()->text(150));
-                    $comment->setUser($users_list[$u]);
+                    $comment->setUser($users[$u]);
                     $comment->setTrick($trick);
                     $manager->persist($comment);
                 }
