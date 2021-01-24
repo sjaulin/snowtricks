@@ -48,7 +48,7 @@
 				<p>{{trick.description}}</p>
 			</div>
 		</div>
-		{% if trick.pictures is not empty %}
+		{% if trick.pictures|length > 1 %}
 			<h2>Photos</h2>
 			<div id="pictures">
 				{% for picture in trick.pictures|slice(1) %}

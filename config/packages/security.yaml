@@ -27,6 +27,8 @@ security:
         password_parameter: login[password]
         #use_referer: true
 
+      user_checker: App\Security\UserChecker
+
       logout:
         path: security_logout
 

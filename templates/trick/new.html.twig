@@ -1,15 +1,28 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	.<div class="container mt-4">
+	<div class="container mt-4">
 		<h1>Création d'une figure</h1>
 		{{ form_start(form) }}
-		{{ form_widget(form) }}
+		{{ form_errors(form)}}
 
-		<div class="input_fields_wrap">
-			<a href="#" class="add_field_button">Ajouter une vidéo</a>
+		<div class="row">
+			<div class="col">
+				{{ form_row(form.name)}}
+				{{ form_row(form.description)}}
+				{{ form_row(form.category)}}
+			</div>
+			<div class="col">
+				<h1>Création d'une figure</h1>
+				{{ form_start(form) }}
+				{{ form_widget(form) }}
+
+				<h3>Vidéos</h3>
+				<div class="input_fields_wrap">
+					<a href="#" class="add_field_button">Ajouter une vidéo</a>
+				</div>
+			</div>
 		</div>
-
 		<button class="btn btn-primary">Enregistrer</button>
 		{{ form_end(form) }}
 	</div>

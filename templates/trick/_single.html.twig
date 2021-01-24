@@ -11,8 +11,10 @@
 			<h5 class="card-title">
 				<a href="{{ path('trick_show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">{{ trick.name }}</a>
 			</h5>
-			<p class="card-text">@{{ trick.owner.pseudo }}
-				,
+			<p class="card-text">
+				{% if trick.owner is not empty %}
+					@{{ trick.owner.pseudo }},
+				{% endif %}
 				{{ trick.createdAt|date("m/d/Y") }}
 			</p>
 			<p>

@@ -3,8 +3,9 @@ $(document).ready(function() {
 	var wrapper   		= $(".input_fields_wrap"); //Fields wrapper
 	var add_button      = $(".add_field_button"); //Add button ID
 	var parent_element = 'p';
-	var html = '<' + parent_element + '>' + '<textarea class="form-control" name="videos[]"></textarea><a href="#" class="remove_field">Retirer</a>' + '</' + parent_element + '>';
+	var html = '<' + parent_element + '>' + '<textarea class="form-control" name="videos[]"></textarea><a href="#" class="remove_field float-right">Retirer</a>' + '</' + parent_element + '>';
 
+	$(wrapper).append(html);// add firsst html block
 	var x = 1; //initlal text box count
 	$(add_button).click(function(e){ //on add input button click
 		e.preventDefault();
