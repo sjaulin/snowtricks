@@ -11,11 +11,10 @@
 			<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 		{% endif %}
 
-		<h1>Connexion</h1>
+		<h1>Connexion...</h1>
 
 		{{ form_start(form) }}
 		{{ form_widget(form) }}
-
 		<button type="submit" class="btn btn-success">connexion</button>
 
 		{{ form_end(form) }}

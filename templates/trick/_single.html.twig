@@ -1,16 +1,23 @@
 {% set picture = trick.pictures|first %}
 
-<div class='col-5'>
-	<div class='card'>
-
-		{% if picture is not empty %}
-			<a href="{{ path('trick.show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}"><img src="{{ asset('uploads/' ~ picture.name) }}" alt="Photo {{ trick.category.name }}" width="150"/></a>
-		{% endif %}
-		<div class='card-body'>
-			<h5 class='card-title'>
-				<a href="{{ path('trick.show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">{{ trick.name }}</a>
+<div class='col'>
+	<div class="card mb-5" style="width: 18rem;">
+		<div class="picture">
+			{% if picture is not empty %}
+				<a href="{{ path('trick_show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}"><img class="img-fluid" src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.category.name }}"/></a>
+			{% endif %}
+		</div>
+		<div class="card-body">
+			<h5 class="card-title">
+				<a href="{{ path('trick_show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">{{ trick.name }}</a>
 			</h5>
-			<span class="badge badge-info">{{ trick.category.name }}</span>
+			<p class="card-text">@{{ trick.owner.pseudo }}
+				,
+				{{ trick.createdAt|date("m/d/Y") }}
+			</p>
+			<p>
+				<span class="badge badge-info">{{ trick.category.name }}</span>
+			</p>
 		</div>
 	</div>
 </div>

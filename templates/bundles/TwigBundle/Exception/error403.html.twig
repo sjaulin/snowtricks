@@ -1,0 +1,15 @@
+{# See at : https://localhost:8000/index.php/_error/403 #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<div class="container">
+		<h1>Oups</h1>
+		<p>HTTP
+			<strong>403</strong>
+			error</p>
+		<p>
+			<a href="{{ path('home') }}">return to the homepage</a>.
+		</p>
+	</div>
+{% endblock %}

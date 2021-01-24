@@ -1,3 +1,6 @@
 twig:
-    default_path: '%kernel.project_dir%/templates'
-    form_themes: ['bootstrap_4_layout.html.twig']
+  default_path: "%kernel.project_dir%/templates"
+  form_themes: ["bootstrap_4_layout.html.twig"]
+  globals:
+    src_trick_base: "/%uploads_trick_directory%/"
+    src_user_base: "/%uploads_user_directory%/"

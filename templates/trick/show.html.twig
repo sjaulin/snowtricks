@@ -9,26 +9,38 @@
 {% endblock %}
 
 {% block body %}
+
 	<div class="container">
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item">
 				<a href="{{ path('home') }}">Accueil</a>
 			</li>
 			<li class="breadcrumb-item">
-				<a href="{{ path('trick.list', {'slug' : trick.category.slug }) }}">{{ trick.category.name }}</a>
+				<a href="{{ path('trick_list', {'slug' : trick.category.slug }) }}">{{ trick.category.name }}</a>
 			</li>
 			<li class="breadcrumb-item active" aria-current="page">{{ trick.name }}</li>
 		</ol>
 
 
-		<h1>{{trick.name}}</h1>
+		<h1>{{trick.name}}
+			{% if is_granted('ENTITY_EDIT', trick) %}
+				<a href="{{ path('trick_edit', {'id' : trick.id }) }}" role="button" class="btn btn-primary btn-sm text-light" title="Modifier">
+					<i class="fa fa-pen" aria-hidden="true"></i>
+				</a>
+			{% endif %}
+
+			{% if is_granted('ENTITY_DELETE', trick) %}
+				<a href="{{ path('trick_delete', {'id' : trick.id }) }}" role="button" class="btn btn-danger btn-sm text-light" title="Supprimer">
+					<i class="fa fa-trash" aria-hidden="true"></i>
+				</a>
+			{% endif %}
+		</h1>
+
 
 		<div class="row">
-			<div class="col-4">
+			<div class="col sm-12">
 				{% if picture is not empty %}
-					<img src="{{ asset('uploads/' ~ picture.name) }}" alt="Photo {{ trick.name }}"/>
-				{% else %}
-					<p>Pas d'image</p>
+					<img class="img-fluid" src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}"/>
 				{% endif %}
 			</div>
 			<div class="col">
@@ -36,10 +48,63 @@
 				<p>{{trick.description}}</p>
 			</div>
 		</div>
+		{% if trick.pictures is not empty %}
+			<h2>Photos</h2>
+			<div id="pictures">
+				{% for picture in trick.pictures|slice(1) %}
+					{% include "trick/_modal.html.twig" %}
+				{% endfor %}
+			</div>
+		{% endif %}
 
-		{% for picture in trick.pictures|slice(1) %}
-			<img src="{{ asset('uploads/' ~ picture.name) }}" alt="Photo {{ trick.name }}" width="150"/>
-		{% endfor %}
+		{% if trick.videos is not empty %}
+			<h2>Videos</h2>
+			<div id="videos">
+				<div class="row">
+					{% for video in trick.videos %}
+						<div class="col-3">
+							<div class="embed-responsive embed-responsive-16by9">
+								<iframe class="embed-responsive-item" src="{{ video.url }}" allowfullscreen></iframe>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+
+			</div>
+		{% endif %}
+
+		<h2>Commentaires</h2>
+		<div id="comments">
+			{% for comment in comments %}
+				<div class="comment card mt-2 mb-2">
+					<div class="card-body">
+						<h5 class="card-title">
+							{% if comment.user.avatar is not empty %}
+								<img src="{{ asset(src_user_base ~ comment.user.avatar.name) }}" class="avatar rounded-circle" alt="{{ comment.user.pseudo }}">
+							{% endif %}
+							@{{ comment.user.pseudo }}</h5>
+						<h6 class="card-subtitle mb-2 text-muted">{{ comment.createdAt|date("m/d/Y") }}</h6>
+						<p class="card-text">{{ comment.message }}.</p>
+					</div>
+				</div>
+			{% endfor %}
+
+			<div id="comment_new">
+				{% if is_granted('ROLE_USER') %}
+					{{ form_start(form) }}
+					{{ form_widget(form) }}
+
+					<button class="btn btn-primary">Enregistrer</button>
+					{{ form_end(form) }}
+				{% else %}
+					<div class="alert alert-primary" role="alert">
+						Pour ajouter un commentaire, vous devez vous
+						<a href="{{ path('security_login') }}">connecter</a>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+
 
 	</div>
 {% endblock %}

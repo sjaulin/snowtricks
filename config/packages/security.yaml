@@ -25,6 +25,7 @@ security:
         check_path: security_login # Url d'envoi des informations de connexion
         username_parameter: login[email]
         password_parameter: login[password]
+        #use_referer: true
 
       logout:
         path: security_logout
@@ -38,5 +39,5 @@ security:
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   access_control:
-    # - { path: ^/admin, roles: ROLE_ADMIN }
-    # - { path: ^/profile, roles: ROLE_USER }
+    - { path: ^/admin, roles: ROLE_ADMIN }
+      # - { path: ^/profile, roles: ROLE_USER }
