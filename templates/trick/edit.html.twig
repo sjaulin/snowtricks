@@ -16,8 +16,8 @@
 			<div class="col">
 				<h3>Photos</h3>
 				<div class="row">
-					{% for picture in pictures %}
-						<div class="col-3">
+					{% for picture in trick.pictures %}
+						<div class="col-4">
 							<p><img src="{{ src_trick_base ~ picture.name }}" alt="" width="100"></p>
 							<p><input name="delete_pictures[{{ picture.id }}]" type="checkbox">
 								Supprimer</p>
@@ -28,7 +28,23 @@
 				</div>
 				{{ form_row(form.pictures)}}
 
-
+				<h3>Vidéos</h3>
+				<div class="row">
+					{% for video in trick.videos %}
+						<div class="col-4">
+							<div class="embed-responsive embed-responsive-16by9">
+								<iframe class="embed-responsive-item" src="{{ video.url }}" allowfullscreen></iframe>
+							</div>
+							<p><input name="delete_videos[{{ video.id }}]" type="checkbox">
+								Supprimer</p>
+						</div>
+					{% else %}
+						<div class="col">Pas de video</div>
+					{% endfor %}
+				</div>
+				<div class="input_fields_wrap">
+					<a href="#" class="add_field_button">Ajouter une vidéo</a>
+				</div>
 			</div>
 		</div>
 
@@ -37,4 +53,8 @@
 		<button class="btn btn-primary">Enregistrer</button>
 		{{ form_end(form) }}
 	</div>
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('asset/js/form.js') }}"></script>
 {% endblock %}

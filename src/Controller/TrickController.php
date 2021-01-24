@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Trick;
+use App\Entity\Video;
 use App\Entity\Comment;
 use App\Entity\Picture;
 use App\Form\TrickType;
 use App\Form\CommentType;
 use App\Repository\TrickRepository;
+use App\Repository\VideoRepository;
 use App\Repository\PictureRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -136,7 +138,7 @@ class TrickController extends AbstractController
     /**
      * @Route("trick/{id}/edit", name="trick_edit")
      */
-    public function edit(Trick $trick, Request $request, PictureRepository $pictureRepository)
+    public function edit(Trick $trick, Request $request, PictureRepository $pictureRepository, VideoRepository $videoRepository)
     {
 
         if (!$this->isGranted('ENTITY_EDIT', $trick)) {
@@ -152,16 +154,37 @@ class TrickController extends AbstractController
             $this->_slug_construct($trick);
             $this->_addPictures($form->get('pictures')->getData(), $trick);
 
+            // Add Videos
+            $url_videos = $request->get('videos');
+            if ($url_videos) {
+                foreach ($url_videos as $url_video) {
+                    if (!empty($url_video)) {
+                        $video = new Video;
+                        $video->setUrl($url_video);
+                        $this->em->persist($video);
+                        $trick->addVideo($video);
+                    }
+                }
+            }
+            // Delete images
             $delete_pictures = $request->get('delete_pictures');
             if ($delete_pictures) {
                 foreach ($delete_pictures as $key => $value) {
                     if ($value === 'on') {
-
                         $delete_picture = $pictureRepository->find($key);
                         $trick->removePicture($delete_picture);
-
-                        // TODO Event doctrine presave ?
                         $this->_deletePictureFile($delete_picture);
+                    }
+                }
+            }
+
+            // Delete videos
+            $delete_videos = $request->get('delete_videos');
+            if ($delete_videos) {
+                foreach ($delete_videos as $key => $value) {
+                    if ($value === 'on') {
+                        $delete_video = $videoRepository->find($key);
+                        $trick->removeVideo($delete_video);
                     }
                 }
             }
@@ -178,7 +201,6 @@ class TrickController extends AbstractController
         return $this->render('trick/edit.html.twig', [
             'trick' => $trick,
             'form' => $form->createView(),
-            'pictures' => $trick->getPictures()
         ]);
     }
 
@@ -252,5 +274,14 @@ class TrickController extends AbstractController
     private function _slug_construct($trick)
     {
         return $this->slugger->slug(strtolower($trick->getName()));
+    }
+
+    private function _get_embed_video($url_video)
+    {
+        if (preg_match('youtube', $url_video)) {
+            return '<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/' . $url_video . '" allowfullscreen></iframe>';
+        } elseif (preg_match('dailymotion', $url_video)) {
+            return '<iframe  class="embed-responsive-item" src="https://www.dailymotion.com/embed/video/' . $url_video . '" allowfullscreen></iframe>';
+        }
     }
 }

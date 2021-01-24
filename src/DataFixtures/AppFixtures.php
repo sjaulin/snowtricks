@@ -9,6 +9,7 @@ use App\Entity\Picture;
 use App\Entity\Category;
 use App\Entity\Comment;
 use App\Entity\User;
+use App\Entity\Video;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -116,6 +117,11 @@ class AppFixtures extends Fixture
             'https://cdn.pixabay.com/photo/2018/03/10/15/22/snow-3214256_960_720.jpg'
         );
 
+        $videos_list = array(
+            'https://www.youtube.com/embed/zWxBgxq5rP0',
+            'https://www.dailymotion.com/embed/video/x7w6v2m'
+        );
+
         for ($c = 0; $c < 2; $c++) {
 
             // Categories
@@ -146,6 +152,14 @@ class AppFixtures extends Fixture
                         $trick->addPicture($picture);
                     }
                 }
+                // Videos
+                shuffle($videos_list);
+                for ($v = 0; $v < 2; $v++) {
+                    $video_url = !empty($videos_list[$v]) ? $videos_list[$v] : $videos_list[0];
+                    $video = new Video;
+                    $video->setUrl($video_url);
+                    $trick->addVideo($video);
+                }
 
                 // Comments
                 shuffle($users);
@@ -153,8 +167,8 @@ class AppFixtures extends Fixture
                     $comment = new Comment;
                     $comment->setMessage($faker->unique()->text(150));
                     $comment->setUser($users[$u]);
-                    $comment->setTrick($trick);
                     $manager->persist($comment);
+                    $trick->addComment($comment);
                 }
 
                 $manager->persist($trick);
@@ -169,10 +183,21 @@ class AppFixtures extends Fixture
      */
     private function _upload_file($url, $directory, $file_name)
     {
-        $filename_path =  $directory . '/' . $file_name;
-        if (file_put_contents($filename_path, file_get_contents($url))) {
-            return true;
+        $filedestination =  $directory . '/' . $file_name;
+
+        if (file_put_contents($filedestination, file_get_contents($url))) {
+            $tmp = imagecreatefromjpeg($filedestination);
+            $size = imagesx($tmp);
+            $im2 = imagecrop($tmp, ['x' => 0, 'y' => 0, 'width' => $size, 'height' => ($size / 1.5)]);
+
+            if ($im2 !== FALSE) {
+                if (imagejpeg($im2, $filedestination)) {
+                    imagedestroy($im2);
+                    return true;
+                }
+            }
         }
+
         return false;
     }
 }

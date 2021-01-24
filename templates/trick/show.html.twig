@@ -23,18 +23,16 @@
 
 
 		<h1>{{trick.name}}
-			{% if is_granted('ENTITY_EDIT', trick) %}{% endif %}
-			<button type="button" class="btn btn-primary btn-sm" title="Modifier">
-				<a href="{{ path('trick_edit', {'id' : trick.id }) }}" class="text-light">
+			{% if is_granted('ENTITY_EDIT', trick) %}
+				<a href="{{ path('trick_edit', {'id' : trick.id }) }}" role="button" class="btn btn-primary btn-sm text-light" title="Modifier">
 					<i class="fa fa-pen" aria-hidden="true"></i>
 				</a>
-			</button>
+			{% endif %}
+
 			{% if is_granted('ENTITY_DELETE', trick) %}
-				<button type="button" class="btn btn-danger btn-sm" title="Supprimer">
-					<a href="{{ path('trick_delete', {'id' : trick.id }) }}" class="text-light">
-						<i class="fa fa-trash" aria-hidden="true"></i>
-					</a>
-				</button>
+				<a href="{{ path('trick_delete', {'id' : trick.id }) }}" role="button" class="btn btn-danger btn-sm text-light" title="Supprimer">
+					<i class="fa fa-trash" aria-hidden="true"></i>
+				</a>
 			{% endif %}
 		</h1>
 
@@ -43,8 +41,6 @@
 			<div class="col sm-12">
 				{% if picture is not empty %}
 					<img class="img-fluid" src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}"/>
-				{% else %}
-					<p>Pas d'image</p>
 				{% endif %}
 			</div>
 			<div class="col">
@@ -52,12 +48,30 @@
 				<p>{{trick.description}}</p>
 			</div>
 		</div>
-		<h2>Photos</h2>
-		<div id="pictures">
-			{% for picture in trick.pictures|slice(1) %}
-				{% include "trick/_modal.html.twig" %}
-			{% endfor %}
-		</div>
+		{% if trick.pictures is not empty %}
+			<h2>Photos</h2>
+			<div id="pictures">
+				{% for picture in trick.pictures|slice(1) %}
+					{% include "trick/_modal.html.twig" %}
+				{% endfor %}
+			</div>
+		{% endif %}
+
+		{% if trick.videos is not empty %}
+			<h2>Videos</h2>
+			<div id="videos">
+				<div class="row">
+					{% for video in trick.videos %}
+						<div class="col-3">
+							<div class="embed-responsive embed-responsive-16by9">
+								<iframe class="embed-responsive-item" src="{{ video.url }}" allowfullscreen></iframe>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+
+			</div>
+		{% endif %}
 
 		<h2>Commentaires</h2>
 		<div id="comments">

@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+	<div class="container">
+		<a class="navbar-brand" href="{{ path('home') }}">Tricks</a>
+		<button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="collapsibleNavId">
+			<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+				{% if app.user %}
+					<li class="nav-item">
+						<a href="{{ path('trick_new') }}" class="nav-link">Ajouter un trick</a>
+					</li>
+				{% endif %}
+				{% if is_granted('ROLE_ADMIN') == true %}
+					<li class="nav-item">
+						<a href="{{ path('admin')}}" class="nav-link">Admin</a>
+					</li>
+				{% endif %}
+			</ul>
+			<ul class="navbar-nav">
+				{% if app.user %}
+					<li class="nav-item">
+						<a href="{{ path('security_logout') }}" class="btn btn-danger">Logout</a>
+					</li>
+				{% else %}
+					<li class="nav-item">
+						<a href="#" class="nav-link">Inscription</a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ path('security_login') }}" class="btn btn-success">Login</a>
+					</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+</nav>

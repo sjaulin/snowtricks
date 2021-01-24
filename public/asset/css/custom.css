@@ -1,0 +1,38 @@
+body {
+  padding-top: 4.5rem;
+  /* Forms */
+}
+
+body .badge a,
+body .badge a:hover,
+body .badge a:visited {
+  color: #ffffff;
+}
+
+body #comments {
+  width: 70%;
+}
+
+body #comments .comment .avatar {
+  width: 30px;
+  margin-right: 5px;
+}
+
+body .modal-dialog {
+  max-width: 70%;
+}
+
+body .modal-dialog .modal-content {
+  background-color: transparent;
+  border: 0;
+  max-width: 500px;
+}
+
+body .modal-dialog .modal-content .close span {
+  font-size: 1.5em;
+}
+
+body #trick_description {
+  height: 100px;
+}
+/*# sourceMappingURL=custom.css.map */
