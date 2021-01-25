@@ -2,34 +2,34 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Avatar;
-use Faker\Factory;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\Entity\Trick;
 use App\Entity\Picture;
 use App\Entity\Category;
 use App\Entity\Comment;
 use App\Entity\User;
 use App\Entity\Video;
-use Doctrine\Persistence\ObjectManager;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use App\Entity\Avatar;
+use App\Service\Picture as PictureService;
+use Faker\Factory;
 
 class AppFixtures extends Fixture
 {
     private $params;
     protected $slugger;
     protected $encoder;
+    protected $pictureService;
 
-    public function __construct(
-        ParameterBagInterface $params,
-        SluggerInterface $slugger,
-        UserPasswordEncoderInterface $encoder
-    ) {
+    public function __construct(ParameterBagInterface $params, SluggerInterface $slugger, UserPasswordEncoderInterface $encoder, PictureService $pictureService)
+    {
         $this->params = $params;
         $this->slugger = $slugger;
         $this->encoder = $encoder;
+        $this->pictureService = $pictureService;
     }
 
     public function load(ObjectManager $manager)
@@ -57,7 +57,8 @@ class AppFixtures extends Fixture
         $admin->setEmail('admin@gmail.com')
             ->setPassword($hash)
             ->setRoles(['ROLE_ADMIN'])
-            ->setPseudo('admin');
+            ->setPseudo('admin')
+            ->setIsVerified(true);
         $manager->persist($admin);
 
         // USERS
@@ -75,12 +76,13 @@ class AppFixtures extends Fixture
             $hash = $this->encoder->encodePassword($user, 'password');
             $user->setEmail("User$u@gmail.com")
                 ->setPseudo($faker->unique()->firstName())
-                ->setPassword($hash);
+                ->setPassword($hash)
+                ->setIsVerified(true);
 
-            $file_name = 'fake_' . $u . '.jpg';
-            if ($this->_upload_file($fakerUsers[$u], $this->params->get('uploads_user_path'), $file_name)) {
+            $filePath = $this->params->get('uploads_user_path') . '/fake_' . $u . '.jpg';
+            if (file_put_contents($filePath, file_get_contents($fakerUsers[$u]))) {
                 $avatar = new Avatar;
-                $avatar->setName($file_name);
+                $avatar->setName($filePath);
                 $user->setAvatar($avatar);
                 $manager->persist($avatar);
             }
@@ -90,7 +92,7 @@ class AppFixtures extends Fixture
         }
 
         // TRICKS
-        $pictures_list = array(
+        $picturesList = array(
             'https://source.unsplash.com/QpD_ArXWKLA/960x640',
             'https://source.unsplash.com/jyoVp3TxTZk/960x640',
             'https://source.unsplash.com/YKikzmEOJXM/960x640',
@@ -117,7 +119,7 @@ class AppFixtures extends Fixture
             'https://cdn.pixabay.com/photo/2018/03/10/15/22/snow-3214256_960_720.jpg'
         );
 
-        $videos_list = array(
+        $videosList = array(
             'https://www.youtube.com/embed/zWxBgxq5rP0',
             'https://www.dailymotion.com/embed/video/x7w6v2m'
         );
@@ -142,20 +144,22 @@ class AppFixtures extends Fixture
                     ->setCategory($category);
 
                 // Pictures
-                shuffle($pictures_list);
+                shuffle($picturesList);
                 for ($p = 0; $p < 2; $p++) {
-                    $unsplash_url = !empty($pictures_list[$p]) ? $pictures_list[$p] : $pictures_list[0];
-                    $file_name = $c . '_' . $t . '_' . $p . '.jpg';
-                    if ($this->_upload_file($unsplash_url, $this->params->get('uploads_trick_path'), $file_name)) {
+                    $fileName = $c . '_' . $t . '_' . $p . '.jpg';
+                    $filePath = $this->params->get('uploads_trick_path') . '/' . $fileName;
+                    $url = !empty($picturesList[$p]) ? $picturesList[$p] : $picturesList[0];
+                    if (file_put_contents($filePath, file_get_contents($url))) {
+                        $this->pictureService->crop($filePath);
                         $picture = new Picture;
-                        $picture->setName($file_name);
+                        $picture->setName($fileName);
                         $trick->addPicture($picture);
                     }
                 }
                 // Videos
-                shuffle($videos_list);
+                shuffle($videosList);
                 for ($v = 0; $v < 2; $v++) {
-                    $video_url = !empty($videos_list[$v]) ? $videos_list[$v] : $videos_list[0];
+                    $video_url = !empty($videosList[$v]) ? $videosList[$v] : $videosList[0];
                     $video = new Video;
                     $video->setUrl($video_url);
                     $trick->addVideo($video);
@@ -176,28 +180,5 @@ class AppFixtures extends Fixture
         }
 
         $manager->flush();
-    }
-
-    /**
-     * Upload url file & save on uploads_directory.
-     */
-    private function _upload_file($url, $directory, $file_name)
-    {
-        $filedestination =  $directory . '/' . $file_name;
-
-        if (file_put_contents($filedestination, file_get_contents($url))) {
-            $tmp = imagecreatefromjpeg($filedestination);
-            $size = imagesx($tmp);
-            $im2 = imagecrop($tmp, ['x' => 0, 'y' => 0, 'width' => $size, 'height' => ($size / 1.5)]);
-
-            if ($im2 !== FALSE) {
-                if (imagejpeg($im2, $filedestination)) {
-                    imagedestroy($im2);
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }

@@ -43,7 +43,6 @@ class TrickController extends AbstractController
     {
 
         $tricks = $repository->findAll();
-
         return new Response($this->render('home.html.twig', [
             'tricks' => $tricks
         ]));
@@ -83,10 +82,12 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->_slug_construct($trick);
+            $trick->setOwner($this->getUser());
+            $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
             $this->_addPictures($form->get('pictures')->getData(), $trick);
+            $this->_add_videos($request->get('videos'), $trick);
 
-            $this->em->persist($trick); // Also persist pictures by cascade.
+            $this->em->persist($trick); // Also persist pictures et videos by cascade.
             $this->em->flush();
 
             $this->addFlash('success', 'Le trick a été créé');
@@ -151,21 +152,12 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->_slug_construct($trick);
+            $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
             $this->_addPictures($form->get('pictures')->getData(), $trick);
+            $this->_add_videos($request->get('videos'), $trick);
 
             // Add Videos
-            $url_videos = $request->get('videos');
-            if ($url_videos) {
-                foreach ($url_videos as $url_video) {
-                    if (!empty($url_video)) {
-                        $video = new Video;
-                        $video->setUrl($url_video);
-                        $this->em->persist($video);
-                        $trick->addVideo($video);
-                    }
-                }
-            }
+
             // Delete images
             $delete_pictures = $request->get('delete_pictures');
             if ($delete_pictures) {
@@ -173,7 +165,10 @@ class TrickController extends AbstractController
                     if ($value === 'on') {
                         $delete_picture = $pictureRepository->find($key);
                         $trick->removePicture($delete_picture);
-                        $this->_deletePictureFile($delete_picture);
+                        $file = $this->getParameter('uploads_trick_directory') . '/' . $delete_picture->getName();
+                        if (is_file($file)) {
+                            unlink($file);
+                        }
                     }
                 }
             }
@@ -223,7 +218,10 @@ class TrickController extends AbstractController
             if ($pictures) {
                 foreach ($pictures as $picture) {
                     // TODO doctrine presave
-                    $this->_deletePictureFile($picture);
+                    $file = $this->getParameter('uploads_trick_directory') . '/' . $picture->getName();
+                    if (is_file($file)) {
+                        unlink($file);
+                    }
                 }
             }
             $this->addFlash('success', 'Le trick a été supprimé');
@@ -257,31 +255,28 @@ class TrickController extends AbstractController
         return $trick;
     }
 
-    // TODO : Create service or EventListener
-    private function _deletePictureFile(Picture $picture)
+    private function _add_videos($videos, $trick)
     {
-        if ($picture) {
-            // delete file
-            $file = $this->getParameter('uploads_trick_directory') . '/' . $picture->getName();
-            if (is_file($file)) {
-                unlink($file);
+        $url_videos = $videos;
+        if ($url_videos) {
+            foreach ($url_videos as $url_video) {
+                if (!empty($url_video)) {
+                    $video = new Video;
+                    $video->setUrl($url_video);
+                    //$this->em->persist($video);
+                    $trick->addVideo($video);
+                }
             }
         }
+
+        return $trick;
     }
 
     // TODO : Create service or EventListener
     // BUG : Si accent
     private function _slug_construct($trick)
     {
-        return $this->slugger->slug(strtolower($trick->getName()));
-    }
-
-    private function _get_embed_video($url_video)
-    {
-        if (preg_match('youtube', $url_video)) {
-            return '<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/' . $url_video . '" allowfullscreen></iframe>';
-        } elseif (preg_match('dailymotion', $url_video)) {
-            return '<iframe  class="embed-responsive-item" src="https://www.dailymotion.com/embed/video/' . $url_video . '" allowfullscreen></iframe>';
-        }
+        $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
+        return $trick;
     }
 }

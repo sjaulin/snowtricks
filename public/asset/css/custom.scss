@@ -1,5 +1,12 @@
 body {
   padding-top: 4.5rem;
+
+  .alert-verify_email_error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+
   .badge {
     a,
     a:hover,
@@ -8,8 +15,6 @@ body {
     }
   }
 
-  #vdeos {
-  }
   #comments {
     width: 70%;
     .comment {
@@ -26,8 +31,6 @@ body {
       background-color: transparent;
       border: 0;
       max-width: 500px;
-      .modal-header {
-      }
       .close {
         span {
           font-size: 1.5em;
