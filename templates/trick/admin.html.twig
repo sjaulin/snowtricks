@@ -1,28 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title 'Gérer les biens' %}
-
+{% block title %}Gestion des tricks |
+{% endblock %}
 {% block body %}
 	<div class="container">
-		<h2>Gérer les tricks</h2>
+		<h1>Gestion des tricks</h1>
 		<table class="table table-striped">
 			<thead>
 				<tr>
 					<th>Nom</th>
+					<th>Id</th>
+					<th>Slug</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for trick in tricks %}
 					<tr>
-						<td>
+						<td class="align-middle">
 							<a href="{{ path('trick_show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">{{ trick.name }}</a>
 						</td>
-						<td>
-							<a href="{{ path('trick_edit', {id: trick.id}) }}" class="btn btn-secondary">Modifier</a>
+						<td class="align-middle">{{ trick.id }}</td>
+						<td class="align-middle">{{ trick.slug }}</td>
+						<td width="100">
+							<a href="{{ path('trick_edit', {id: trick.id}) }}" class="btn btn-warning">Modifier</a>
 						</td>
 						<td>
-							<a href="{{ path('trick_delete', {id: trick.id}) }}" class="btn btn-danger">Supprimer</a>
+							{{ include('trick/_delete_form.html.twig') }}
 						</td>
 					</tr>
 				{% endfor %}

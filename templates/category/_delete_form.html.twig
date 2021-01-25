@@ -1,5 +1,18 @@
-<form method="post" action="{{ path('category_delete', {'id': category.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-    <input type="hidden" name="_method" value="DELETE">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
-    <button class="btn">Delete</button>
+<form method="post" action="{{ path('category_delete', {'id': category.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette catégorie ?');">
+	<input type="hidden" name="_method" value="DELETE">
+	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+
+	<fieldset>
+		<legend>Supprimer la catégorie</legend>
+		<p></p>
+		<select id="category_target" name="category_target" required>
+			<option value="">--Sélectionnez une catégorie--</option>
+			{% for category_target in others_categories %}
+				<option value="{{ category_target.id }}">{{ category_target.name }}</option>
+			{% endfor %}
+		</select>
+		<small class="form-text text-muted">Déplacer les trick vers cette catégorie</small>
+		<button class="btn btn-danger">Supprimer</button>
+	</fieldset>
+
 </form>

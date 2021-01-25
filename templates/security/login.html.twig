@@ -11,7 +11,7 @@
 			<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 		{% endif %}
 
-		<h1>Connexion...</h1>
+		<h1>Connexion</h1>
 
 		{{ form_start(form) }}
 		{{ form_widget(form) }}
@@ -19,5 +19,9 @@
 
 		{{ form_end(form) }}
 
+		<h2>Déjà inscrit ?</h2>
+		<p>Après inscription, un mail vous a été envoyé pour valider votre adresse.<br/>Pour recevoir à nouveau ce mail,
+			<a href="{{path('app_verify_email_request') }}">cliquez ici</a>
+		</p>
 	</div>
 {% endblock %}

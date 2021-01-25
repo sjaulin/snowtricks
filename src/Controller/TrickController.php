@@ -37,6 +37,17 @@ class TrickController extends AbstractController
     }
 
     /**
+     * @Route("/admin/trick", name="trick_admin")
+     */
+    public function index()
+    {
+        $tricks = $this->repository->findAll();
+        return $this->render('trick/admin.html.twig', [
+            'tricks' => $tricks
+        ]);
+    }
+
+    /**
      * @Route("/", name="home", methods={"GET"})
      */
     public function home(TrickRepository $repository): Response
@@ -213,20 +224,22 @@ class TrickController extends AbstractController
         }
 
         if (!empty($trick)) {
-            $this->em->remove($trick);
-            $this->em->flush();
+            if ($this->isCsrfTokenValid('delete' . $trick->getId(), $request->request->get('_token'))) {
+                $this->em->remove($trick);
+                $this->em->flush();
 
-            $pictures = $trick->getPictures();
-            if ($pictures) {
-                foreach ($pictures as $picture) {
-                    // TODO doctrine presave
-                    $file = $this->getParameter('uploads_trick_directory') . '/' . $picture->getName();
-                    if (is_file($file)) {
-                        unlink($file);
+                $pictures = $trick->getPictures();
+                if ($pictures) {
+                    foreach ($pictures as $picture) {
+                        // TODO doctrine presave
+                        $file = $this->getParameter('uploads_trick_directory') . '/' . $picture->getName();
+                        if (is_file($file)) {
+                            unlink($file);
+                        }
                     }
                 }
+                $this->addFlash('success', 'Le trick a été supprimé');
             }
-            $this->addFlash('success', 'Le trick a été supprimé');
             return $this->redirectToRoute('home');
         }
 
