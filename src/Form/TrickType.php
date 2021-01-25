@@ -23,7 +23,9 @@ class TrickType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom de la figure',
-                'help' => 'Doit avoir entre ' . Trick::constraint_name_length_min . ' et ' . Trick::constraint_name_length_max . ' caractères',
+                'help' => 'Doit avoir entre ' .
+                    Trick::CONSTRAINT_NAME_LENGTH_MIN . ' et ' .
+                    Trick::CONSTRAINT_NAME_LENGTH_MAX . ' caractères',
             ])
             ->add('description', TextareaType::class, [])
             ->add('pictures', FileType::class, [

@@ -83,8 +83,8 @@ class TrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setOwner($this->getUser());
             $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
-            $this->_addPictures($form->get('pictures')->getData(), $trick);
-            $this->_add_videos($request->get('videos'), $trick);
+            $this->addPictures($form->get('pictures')->getData(), $trick);
+            $this->addVideos($request->get('videos'), $trick);
 
             $this->em->persist($trick); // Also persist pictures et videos by cascade.
             $this->em->flush();
@@ -138,8 +138,12 @@ class TrickController extends AbstractController
     /**
      * @Route("trick/{id}/edit", name="trick_edit")
      */
-    public function edit(Trick $trick, Request $request, PictureRepository $pictureRepository, VideoRepository $videoRepository)
-    {
+    public function edit(
+        Trick $trick,
+        Request $request,
+        PictureRepository $pictureRepository,
+        VideoRepository $videoRepository
+    ) {
 
         if (!$this->isGranted('ENTITY_EDIT', $trick)) {
             throw new AccessDeniedHttpException("Vous ne pouvez pas modifier ce trick");
@@ -151,8 +155,8 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
-            $this->_addPictures($form->get('pictures')->getData(), $trick);
-            $this->_add_videos($request->get('videos'), $trick);
+            $this->addPictures($form->get('pictures')->getData(), $trick);
+            $this->addVideos($request->get('videos'), $trick);
 
             // Add Videos
 
@@ -230,7 +234,7 @@ class TrickController extends AbstractController
     }
 
     // TODO : Create service or EventListener
-    private function _addPictures($pictures, $trick)
+    private function addPictures($pictures, $trick)
     {
         if (!empty($pictures)) {
             foreach ($pictures as $picture) {
@@ -253,7 +257,7 @@ class TrickController extends AbstractController
         return $trick;
     }
 
-    private function _add_videos($videos, $trick)
+    private function addVideos($videos, $trick)
     {
         $url_videos = $videos;
         if ($url_videos) {
@@ -267,14 +271,6 @@ class TrickController extends AbstractController
             }
         }
 
-        return $trick;
-    }
-
-    // TODO : Create service or EventListener
-    // BUG : Si accent
-    private function _slug_construct($trick)
-    {
-        $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
         return $trick;
     }
 }
