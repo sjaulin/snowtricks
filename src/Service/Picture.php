@@ -13,7 +13,7 @@ class Picture
         $size = imagesx($resource);
         $ressource2 = imagecrop($resource, ['x' => 0, 'y' => 0, 'width' => $size, 'height' => ($size / 1.5)]);
 
-        if ($ressource2 != FALSE) {
+        if ($ressource2 != false) {
             try {
                 imagejpeg($ressource2, $filePath);
                 imagedestroy($ressource2);

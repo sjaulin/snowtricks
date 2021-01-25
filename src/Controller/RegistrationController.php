@@ -68,7 +68,7 @@ class RegistrationController extends AbstractController
 
     /**
      * Resquest a new link to verify user email
-     * 
+     *
      * @Route("/verify/mail/request", name="app_verify_email_request")
      */
     public function VerifyUserEmailRequest(Request $request, UserRepository $userRepository): Response
@@ -78,7 +78,6 @@ class RegistrationController extends AbstractController
         $form = $this->get('form.factory')->createNamed('', EmailConfirmationFormType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             $email = $request->get('email');
             $user = $userRepository->findOneBy(['email' => $email]);
             $this->emailVerifier->sendEmailConfirmation(

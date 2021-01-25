@@ -125,7 +125,6 @@ class AppFixtures extends Fixture
         );
 
         for ($c = 0; $c < 2; $c++) {
-
             // Categories
             $category = new Category();
             $category->setName(ucwords($faker->unique()->word()));

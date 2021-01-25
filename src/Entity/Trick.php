@@ -30,9 +30,9 @@ class Trick
      * @ORM\Column(type="string", length=Trick::constraint_name_length_max, unique=true)
      * @Assert\NotBlank(message="Le nom est obligatoire")
      * @Assert\Length(
-     * min=Trick::constraint_name_length_min, 
-     * max=Trick::constraint_name_length_max, 
-     * minMessage="Le nom doit faire au moins {{ limit }} caractères", 
+     * min=Trick::constraint_name_length_min,
+     * max=Trick::constraint_name_length_max,
+     * minMessage="Le nom doit faire au moins {{ limit }} caractères",
      * maxMessage="Le nom doit faire au maximum {{ limit }} caractères")
      */
     private $name;

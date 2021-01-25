@@ -81,7 +81,6 @@ class TrickController extends AbstractController
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             $trick->setOwner($this->getUser());
             $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
             $this->_addPictures($form->get('pictures')->getData(), $trick);
@@ -151,7 +150,6 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
             $this->_addPictures($form->get('pictures')->getData(), $trick);
             $this->_add_videos($request->get('videos'), $trick);
