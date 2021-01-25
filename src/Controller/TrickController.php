@@ -43,7 +43,6 @@ class TrickController extends AbstractController
     {
 
         $tricks = $repository->findAll();
-
         return new Response($this->render('home.html.twig', [
             'tricks' => $tricks
         ]));

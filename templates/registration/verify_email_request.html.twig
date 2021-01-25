@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Valider votre adresse email
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		{% for flashError in app.flashes('verify_email_error') %}
+			<div class="alert alert-danger" role="alert">{{ flashError }}</div>
+		{% endfor %}
+
+		<h1>Valider votre adresse email</h1>
+
+		{{ form_start(registrationForm) }}
+		{{ form_row(registrationForm.email) }}
+
+		<button type="submit" class="btn btn-success">Enregistrer</button>
+		{{ form_end(registrationForm) }}
+	</div>
+{% endblock %}

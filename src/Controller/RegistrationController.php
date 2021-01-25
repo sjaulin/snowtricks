@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\EmailConfirmationFormType;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
 use App\Repository\UserRepository;
@@ -51,12 +52,11 @@ class RegistrationController extends AbstractController
                 'app_verify_email',
                 $user,
                 (new TemplatedEmail())
-                    ->from(new Address('stephanejaulin+snowtrick@gmail.com', 'Sowtricks'))
+                    ->from(new Address('stephanejaulin+snowtricks@gmail.com', 'Sowtricks'))
                     ->to($user->getEmail())
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-            // do anything else you need here, like send an email
 
             return $this->redirectToRoute('security_login');
         }
@@ -67,6 +67,41 @@ class RegistrationController extends AbstractController
     }
 
     /**
+     * Resquest a new link to verify user email
+     * 
+     * @Route("/verify/mail/request", name="app_verify_email_request")
+     */
+    public function VerifyUserEmailRequest(Request $request, UserRepository $userRepository): Response
+    {
+
+        $user = new User();
+        $form = $this->get('form.factory')->createNamed('', EmailConfirmationFormType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $email = $request->get('email');
+            $user = $userRepository->findOneBy(['email' => $email]);
+            $this->emailVerifier->sendEmailConfirmation(
+                'app_verify_email',
+                $user,
+                (new TemplatedEmail())
+                    ->from(new Address('stephanejaulin+snowtricks@gmail.com', 'Sowtricks'))
+                    ->to($user->getEmail())
+                    ->subject('Please Confirm your Email')
+                    ->htmlTemplate('registration/confirmation_email.html.twig')
+            );
+
+            return $this->redirectToRoute('security_login');
+        }
+
+        return $this->render('registration/verify_email_request.html.twig', [
+            'registrationForm' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * The email to confirm the email points to this route.
+     *
      * @Route("/verify/email", name="app_verify_email")
      */
     public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
@@ -77,24 +112,22 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_register');
         }
 
-        $userRepository->find($id);
+        $user = $userRepository->find($id);
 
-        if (null === $userRepository) {
+        if (null === $user) {
             return $this->redirectToRoute('app_register');
         }
 
-        // validate email confirmation link, sets User::isVerified=true and persists
         try {
-            $this->emailVerifier->handleEmailConfirmation($request, $userRepository);
+            $this->emailVerifier->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $exception->getReason());
 
             return $this->redirectToRoute('app_register');
         }
 
-        // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Your email address has been verified.');
 
-        return $this->redirectToRoute('app_register');
+        return $this->redirectToRoute('home');
     }
 }
