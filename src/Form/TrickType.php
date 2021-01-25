@@ -30,7 +30,7 @@ class TrickType extends AbstractType
                 'label' => 'Ajouter des photos',
                 'help' => 'Sélectionner plusieurs photos si nécessaire',
                 'multiple' => true,
-                'mapped' => false, // dot not link to bdd
+                'mapped' => false, // dot not link to database
                 'required' => false,
             ])
             ->add('category', EntityType::class, [
