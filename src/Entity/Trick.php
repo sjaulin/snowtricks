@@ -16,8 +16,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Trick
 {
 
-    const constraint_name_length_min = 2;
-    const constraint_name_length_max = 191;
+    const CONSTRAINT_NAME_LENGTH_MIN = 2;
+    const CONSTRAINT_NAME_LENGTH_MAX = 191;
 
     /**
      * @ORM\Id
@@ -27,12 +27,12 @@ class Trick
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=Trick::constraint_name_length_max, unique=true)
+     * @ORM\Column(type="string", length=Trick::CONSTRAINT_NAME_LENGTH_MAX, unique=true)
      * @Assert\NotBlank(message="Le nom est obligatoire")
      * @Assert\Length(
-     * min=Trick::constraint_name_length_min, 
-     * max=Trick::constraint_name_length_max, 
-     * minMessage="Le nom doit faire au moins {{ limit }} caractères", 
+     * min=Trick::CONSTRAINT_NAME_LENGTH_MIN,
+     * max=Trick::CONSTRAINT_NAME_LENGTH_MAX,
+     * minMessage="Le nom doit faire au moins {{ limit }} caractères",
      * maxMessage="Le nom doit faire au maximum {{ limit }} caractères")
      */
     private $name;

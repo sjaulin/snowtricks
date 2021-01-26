@@ -58,8 +58,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=20, nullable=false)
      */
     private $pseudo;
-
-    /**
+/**
      * @ORM\Column(type="boolean")
      */
     private $isVerified = false;
@@ -244,7 +243,6 @@ class User implements UserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
-
         return $this;
     }
 }
