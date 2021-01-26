@@ -7,10 +7,10 @@ use Symfony\Bundle\FrameworkBundle\Test\kernelTestCase;
 
 class TrickRepositoryTest extends kernelTestCase
 {
-    public function testCount() {
+    public function testCount()
+    {
         self::bootkernel();
         $tricks = self::$container->get(TrickRepository::class)->count([]);
-        $this->assertEquals(20, $tricks);
+        $this->assertEquals(10, $tricks);
     }
 }
-
