@@ -2,16 +2,23 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoryRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
+ * @UniqueEntity("name", message="La catégorie {{ value }} existe déjà")
  */
 class Category
 {
+
+    const CONSTRAINT_NAME_LENGTH_MIN = 2;
+    const CONSTRAINT_NAME_LENGTH_MAX = 20;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -20,7 +27,13 @@ class Category
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=Trick::CONSTRAINT_NAME_LENGTH_MAX, unique=true)
+     * @Assert\NotBlank(message="Le nom est obligatoire")
+     * @Assert\Length(
+     * min=Trick::CONSTRAINT_NAME_LENGTH_MIN,
+     * max=Trick::CONSTRAINT_NAME_LENGTH_MAX,
+     * minMessage="Le nom doit faire au moins {{ limit }} caractères",
+     * maxMessage="Le nom doit faire au maximum {{ limit }} caractères")
      */
     private $name;
 

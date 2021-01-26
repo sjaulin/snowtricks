@@ -9,36 +9,48 @@ body .alert-verify_email_error {
   border-color: #f5c6cb;
 }
 
-body .badge a,
-body .badge a:hover,
-body .badge a:visited {
+body .trick-show .badge a,
+body .trick-show .badge a:hover,
+body .trick-show .badge a:visited {
   color: #ffffff;
 }
 
-body #comments {
+body .trick-show h2 {
+  margin-top: 1em;
+}
+
+body .trick-show #comments {
   width: 70%;
 }
 
-body #comments .comment .avatar {
+body .trick-show #comments .comment .avatar {
   width: 30px;
   margin-right: 5px;
 }
 
-body .modal-dialog {
+body .trick-show .modal-dialog {
   max-width: 70%;
 }
 
-body .modal-dialog .modal-content {
+body .trick-show .modal-dialog .modal-content {
   background-color: transparent;
   border: 0;
   max-width: 500px;
 }
 
-body .modal-dialog .modal-content .close span {
+body .trick-show .modal-dialog .modal-content .close span {
   font-size: 1.5em;
 }
 
-body #trick_description {
+body form {
+  margin-bottom: 1em;
+}
+
+body form #trick_description {
   height: 100px;
+}
+
+body form .btn {
+  margin-top: 0.5em;
 }
 /*# sourceMappingURL=custom.css.map */

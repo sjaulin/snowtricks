@@ -7,40 +7,54 @@ body {
     border-color: #f5c6cb;
   }
 
-  .badge {
-    a,
-    a:hover,
-    a:visited {
-      color: #ffffff;
-    }
-  }
-
-  #comments {
-    width: 70%;
-    .comment {
-      .avatar {
-        width: 30px;
-        margin-right: 5px;
+  .trick-show {
+    .badge {
+      a,
+      a:hover,
+      a:visited {
+        color: #ffffff;
       }
     }
-  }
 
-  .modal-dialog {
-    max-width: 70%;
-    .modal-content {
-      background-color: transparent;
-      border: 0;
-      max-width: 500px;
-      .close {
-        span {
-          font-size: 1.5em;
+    h2 {
+      margin-top: 1em;
+    }
+
+    #comments {
+      width: 70%;
+      .comment {
+        .avatar {
+          width: 30px;
+          margin-right: 5px;
+        }
+      }
+    }
+
+    .modal-dialog {
+      max-width: 70%;
+      .modal-content {
+        background-color: transparent;
+        border: 0;
+        max-width: 500px;
+        .close {
+          span {
+            font-size: 1.5em;
+          }
         }
       }
     }
   }
 
   /* Forms */
-  #trick_description {
-    height: 100px;
+  form {
+    margin-bottom: 1em;
+
+    #trick_description {
+      height: 100px;
+    }
+
+    .btn {
+      margin-top: 0.5em;
+    }
   }
 }
