@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -20,18 +19,15 @@ use Faker\Factory;
 class AppFixtures extends Fixture
 {
     private $params;
-    protected $slugger;
     protected $encoder;
     protected $pictureService;
 
     public function __construct(
         ParameterBagInterface $params,
-        SluggerInterface $slugger,
         UserPasswordEncoderInterface $encoder,
         PictureService $pictureService
     ) {
         $this->params = $params;
-        $this->slugger = $slugger;
         $this->encoder = $encoder;
         $this->pictureService = $pictureService;
     }
@@ -135,7 +131,6 @@ class AppFixtures extends Fixture
             // Categories
             $category = new Category();
             $category->setName(ucwords($faker->unique()->word()));
-            $category->setSlug($this->slugger->slug(strtolower($category->getName())));
             $manager->persist($category);
 
             // Tricks in category
@@ -146,7 +141,6 @@ class AppFixtures extends Fixture
                     ->setOwner($users[0])
                     ->setDescription($faker->text(150))
                     ->setCreatedAt(new \DateTime)
-                    ->setSlug($this->slugger->slug(strtolower($trick->getName())))
                     ->setCategory($category);
 
                 // Pictures
