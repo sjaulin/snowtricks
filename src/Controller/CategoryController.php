@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Trick;
 use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
@@ -40,7 +39,6 @@ class CategoryController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $category->setSlug($this->slugger->slug(strtolower($category->getName())));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($category);
             $entityManager->flush();
@@ -64,7 +62,6 @@ class CategoryController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $category->setSlug($this->slugger->slug(strtolower($category->getName())));
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('category_admin');
@@ -96,7 +93,6 @@ class CategoryController extends AbstractController
             if ($category) {
                 $tricksToMove = $category->getTricks();
                 foreach ($tricksToMove as $trickToMove) {
-                    // @var Trick
                     $trickToMove->setCategory($categoryTarget);
                 }
             }

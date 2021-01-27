@@ -2,16 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\TrickRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TrickRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=TrickRepository::class)
  * @UniqueEntity("name", message="La figure {{ value }} existe déjà")
+ * @UniqueEntity("slug")
  */
 class Trick
 {
@@ -48,7 +50,7 @@ class Trick
     private $createdAt;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=Trick::CONSTRAINT_NAME_LENGTH_MAX, unique=true)
      */
     private $slug;
 
@@ -83,6 +85,11 @@ class Trick
         $this->pictures = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->videos = new ArrayCollection();
+    }
+
+    public function computeSlug(SluggerInterface $slugger)
+    {
+        $this->slug = (string) $slugger->slug($this->getName())->lower();
     }
 
     public function getId(): ?int

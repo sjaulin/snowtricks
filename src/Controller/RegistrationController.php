@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Avatar;
 use App\Form\EmailConfirmationFormType;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
@@ -15,14 +16,17 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use App\Service\Picture as PictureService;
 
 class RegistrationController extends AbstractController
 {
     private $emailVerifier;
+    private $pictureService;
 
-    public function __construct(EmailVerifier $emailVerifier)
+    public function __construct(EmailVerifier $emailVerifier, PictureService $pictureService)
     {
         $this->emailVerifier = $emailVerifier;
+        $this->pictureService = $pictureService;
     }
 
     /**
@@ -42,6 +46,25 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+
+            // TODO Move to service or private function in this class ?
+            // Save avatar.
+            $avatar = $form->get('avatar')->getData();
+            $avatarDirectory = $this->getParameter('uploads_user_path');
+            $filename = md5(uniqid()) . '.' . $avatar->guessExtension(); // Require php.ini : extension=fileinfo
+            $avatar->move(
+                $avatarDirectory,
+                $filename
+            );
+            $this->pictureService->crop($avatarDirectory . '/' . $filename, 1);
+            $this->pictureService->scale($avatarDirectory . '/' . $filename, 200, 200);
+
+            // Create Avatar entity
+            $avatar = new Avatar;
+            $avatar->setName($filename);
+
+            // Attach to user
+            $user->setAvatar($avatar);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);

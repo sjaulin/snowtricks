@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use Symfony\Component\String\Slugger\SluggerInterface;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -15,41 +15,28 @@ use App\Entity\User;
 use App\Entity\Video;
 use App\Entity\Avatar;
 use App\Service\Picture as PictureService;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Faker\Factory;
+use App\DataFixtures\InitFixtures;
 
-class AppFixtures extends Fixture
+class AppFixtures extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
 {
     private $params;
-    protected $slugger;
     protected $encoder;
     protected $pictureService;
 
     public function __construct(
         ParameterBagInterface $params,
-        SluggerInterface $slugger,
         UserPasswordEncoderInterface $encoder,
         PictureService $pictureService
     ) {
         $this->params = $params;
-        $this->slugger = $slugger;
         $this->encoder = $encoder;
         $this->pictureService = $pictureService;
     }
 
     public function load(ObjectManager $manager)
     {
-        $dirs = array(
-            'public/uploads',
-            'public/uploads/user',
-            'public/uploads/trick'
-        );
-
-        foreach ($dirs as $dir) {
-            if (!is_dir($dir)) {
-                mkdir($dir);
-            }
-        }
-
         $faker = Factory::create('fr_FR');
 
         // ADMIN
@@ -135,7 +122,6 @@ class AppFixtures extends Fixture
             // Categories
             $category = new Category();
             $category->setName(ucwords($faker->unique()->word()));
-            $category->setSlug($this->slugger->slug(strtolower($category->getName())));
             $manager->persist($category);
 
             // Tricks in category
@@ -146,7 +132,6 @@ class AppFixtures extends Fixture
                     ->setOwner($users[0])
                     ->setDescription($faker->text(150))
                     ->setCreatedAt(new \DateTime)
-                    ->setSlug($this->slugger->slug(strtolower($trick->getName())))
                     ->setCategory($category);
 
                 // Pictures
@@ -156,7 +141,7 @@ class AppFixtures extends Fixture
                     $filePath = $this->params->get('uploads_trick_path') . '/' . $fileName;
                     $url = !empty($picturesList[$p]) ? $picturesList[$p] : $picturesList[0];
                     if (file_put_contents($filePath, file_get_contents($url))) {
-                        $this->pictureService->crop($filePath);
+                        $this->pictureService->crop($filePath, 1.5);
                         $picture = new Picture;
                         $picture->setName($fileName);
                         $trick->addPicture($picture);
@@ -186,5 +171,17 @@ class AppFixtures extends Fixture
         }
 
         $manager->flush();
+    }
+
+    public static function getGroups(): array
+    {
+        return ['app'];
+    }
+
+    public function getDependencies()
+    {
+        return array(
+            InitFixtures::class
+        );
     }
 }

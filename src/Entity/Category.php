@@ -6,8 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
@@ -50,6 +51,11 @@ class Category
     public function __construct()
     {
         $this->Tricks = new ArrayCollection();
+    }
+
+    public function computeSlug(SluggerInterface $slugger)
+    {
+        $this->slug = (string) $slugger->slug($this->getName())->lower();
     }
 
     public function getId(): ?int

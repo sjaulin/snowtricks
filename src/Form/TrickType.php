@@ -20,6 +20,7 @@ class TrickType extends AbstractType
         array $options
     ) {
 
+        // TODO Embed Collection of forms : https://symfony.com/doc/current/form/form_collections.html
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom de la figure',
