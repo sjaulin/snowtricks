@@ -2,12 +2,12 @@
 
 namespace App\Tests\Repository;
 
-use App\DataFixtures\TrickFixtures;
-use App\Repository\TrickRepository;
+use App\DataFixtures\UserFixtures;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\kernelTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 
-class TrickRepositoryTest extends kernelTestCase
+class UserRepositoryTest extends kernelTestCase
 {
     use FixturesTrait;
 
@@ -16,9 +16,9 @@ class TrickRepositoryTest extends kernelTestCase
 
         self::bootkernel();
         $this->loadFixtures([
-            TrickFixtures::class,
+            UserFixtures::class,
         ]);
-        $categories = self::$container->get(TrickRepository::class)->count([]);
-        $this->assertEquals(10, $categories);
+        $users = self::$container->get(UserRepository::class)->count([]);
+        $this->assertEquals(6, $users);
     }
 }

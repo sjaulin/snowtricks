@@ -93,7 +93,6 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setOwner($this->getUser());
-            //$trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
             $this->addPictures($form->get('pictures')->getData(), $trick);
             $this->addVideos($request->get('videos'), $trick);
 
@@ -165,7 +164,6 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $trick->setSlug($this->slugger->slug(strtolower($trick->getName())));
             $this->addPictures($form->get('pictures')->getData(), $trick);
             $this->addVideos($request->get('videos'), $trick);
 
@@ -246,7 +244,7 @@ class TrickController extends AbstractController
         throw $this->createNotFoundException('Trick does not exist');
     }
 
-    // TODO : Create service or EventListener
+    // TODO : Create service AND Doctrine EventListener
     private function addPictures($pictures, $trick)
     {
         if (!empty($pictures)) {

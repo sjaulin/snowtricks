@@ -16,4 +16,5 @@
 ###< symfony/phpunit-bridge ###
 
 public/uploads
+public/test-coverage
 /.idea/
