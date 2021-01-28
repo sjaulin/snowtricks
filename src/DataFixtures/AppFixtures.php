@@ -137,7 +137,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface, DependentFix
                 // Pictures
                 shuffle($picturesList);
                 for ($p = 0; $p < 2; $p++) {
-                    $fileName = $c . '_' . $t . '_' . $p . '.jpg';
+                    $fileName = 'fake_' . $c . '_' . $t . '_' . $p . '.jpg';
                     $filePath = $this->params->get('uploads_trick_path') . '/' . $fileName;
                     $url = !empty($picturesList[$p]) ? $picturesList[$p] : $picturesList[0];
                     if (file_put_contents($filePath, file_get_contents($url))) {
