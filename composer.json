@@ -40,7 +40,8 @@
         "symfony/yaml": "5.1.*",
         "symfonycasts/verify-email-bundle": "^1.1",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "symfony/web-profiler-bundle": "^5.1"
     },
     "require-dev": {
         "behat/behat": "^3.8",
@@ -52,8 +53,7 @@
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^5.2",
         "symfony/stopwatch": "^5.1",
-        "symfony/var-dumper": "^5.1",
-        "symfony/web-profiler-bundle": "^5.1"
+        "symfony/var-dumper": "^5.1"
     },
     "config": {
         "optimize-autoloader": true,
