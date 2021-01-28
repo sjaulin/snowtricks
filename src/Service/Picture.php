@@ -27,7 +27,6 @@ class Picture
     {
         $resource = imagecreatefromjpeg($filePath);
         $ressource2 = imagescale($resource, $w, $h);
-
         if ($ressource2 != false) {
             try {
                 imagejpeg($ressource2, $filePath);
