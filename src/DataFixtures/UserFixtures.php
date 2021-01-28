@@ -13,7 +13,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class UserFixtures extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
+class UserFixtures extends Fixture implements FixtureGroupInterface
 {
     const USER_NB = 5;
 
@@ -80,12 +80,5 @@ class UserFixtures extends Fixture implements FixtureGroupInterface, DependentFi
     public static function getGroups(): array
     {
         return ['test'];
-    }
-
-    public function getDependencies()
-    {
-        return array(
-            InitFixtures::class,
-        );
     }
 }
