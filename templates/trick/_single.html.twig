@@ -4,7 +4,7 @@
 	<div class="card mb-5" style="width: 18rem;">
 		<div class="picture">
 			{% if picture is not empty %}
-				<a href="{{ path('trick_show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}"><img class="img-fluid" src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.category.name }}"/></a>
+				<a href="{{ path('trick_show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}"><img class="img-fluid" src="{{ src_trick_base ~ picture.name }}" alt="Photo {{ trick.category.name }}"/></a>
 			{% endif %}
 		</div>
 		<div class="card-body">
