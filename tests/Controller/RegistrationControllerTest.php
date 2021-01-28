@@ -16,10 +16,6 @@ class RegistrationControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $this->loadFixtures([
-            InitFixtures::class,
-        ]);
-
         $client->request('GET', '/register');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Inscription');
