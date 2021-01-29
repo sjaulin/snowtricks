@@ -8,17 +8,17 @@
 		{{ form_errors(form)}}
 
 		<div class="row">
-			<div class="col">
+			<div class="col-lg-6">
 				{{ form_row(form.name)}}
 				{{ form_row(form.description)}}
 				{{ form_row(form.category)}}
 			</div>
-			<div class="col">
+			<div class="col-lg-6">
 				<h3>Photos</h3>
 				<div class="row">
 					{% for picture in trick.pictures %}
-						<div class="col-4">
-							<p><img src="{{ src_trick_base ~ picture.name }}" alt="" width="100"></p>
+						<div class="col-6 col-md-4">
+							<p><img src="{{ src_trick_base ~ picture.name }}" alt="" class="img-fluid"></p>
 							<p><input name="delete_pictures[{{ picture.id }}]" type="checkbox">
 								Supprimer</p>
 						</div>
@@ -48,8 +48,12 @@
 			</div>
 		</div>
 
-		<button class="btn btn-primary">Enregistrer</button>
+		<button class="btn btn-primary float-left mr-2">Enregistrer</button>
+
 		{{ form_end(form) }}
+		{% if is_granted('ENTITY_DELETE', trick) %}
+			{% include "trick/_delete_form.html.twig" %}
+		{% endif %}
 	</div>
 {% endblock %}
 

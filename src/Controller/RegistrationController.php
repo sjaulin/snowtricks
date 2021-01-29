@@ -56,9 +56,10 @@ class RegistrationController extends AbstractController
                 $avatarDirectory,
                 $filename
             );
-            $this->pictureService->crop($avatarDirectory . '/' . $filename, 1);
+            $filePath = $avatarDirectory . '/' . $filename;
+            $this->pictureService->crop($filePath, 1);
             $this->pictureService->scale($avatarDirectory . '/' . $filename, 200, 200);
-
+            $file = $avatarDirectory . '/' . $filename;
             // Create Avatar entity
             $avatar = new Avatar;
             $avatar->setName($filename);

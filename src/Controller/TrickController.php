@@ -20,20 +20,22 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use App\Service\Picture as PictureService;
 
 class TrickController extends AbstractController
 {
-
-    private $repository;
+    private $pictureService;
 
     public function __construct(
         TrickRepository $repository,
         EntityManagerInterface $em,
-        SluggerInterface $slugger
+        SluggerInterface $slugger,
+        PictureService $pictureService
     ) {
         $this->repository = $repository;
         $this->em = $em;
         $this->slugger = $slugger;
+        $this->pictureService = $pictureService;
     }
 
     /**
@@ -92,9 +94,21 @@ class TrickController extends AbstractController
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            for ($i = 0; $i < TrickType::PICTURES_MAX_NB; $i++) {
+                if ($form->get('picture_' . $i)->getData()) {
+                    $this->addPicture($form->get('picture_' . $i)->getData(), $trick);
+                }
+            }
+
+            for ($i = 0; $i < TrickType::VIDEOS_MAX_NB; $i++) {
+                if ($form->get('video_' . $i)->getData()) {
+                    $this->addVideo($form->get('video_' . $i)->getData(), $trick);
+                }
+            }
+
             $trick->setOwner($this->getUser());
-            $this->addPictures($form->get('pictures')->getData(), $trick);
-            $this->addVideos($request->get('videos'), $trick);
+
+
 
             $this->em->persist($trick); // Also persist pictures et videos by cascade.
             $this->em->flush();
@@ -107,7 +121,7 @@ class TrickController extends AbstractController
         }
         return $this->render('trick/new.html.twig', [
             'trick' => $trick,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -245,42 +259,32 @@ class TrickController extends AbstractController
     }
 
     // TODO : Create service AND Doctrine EventListener
-    private function addPictures($pictures, $trick)
+    private function addPicture($picture, $trick)
     {
-        if (!empty($pictures)) {
-            foreach ($pictures as $picture) {
-                // Save file.
-                $filename = md5(uniqid()) . '.' . $picture->guessExtension(); // Require php.ini : extension=fileinfo
-                $picture->move(
-                    $this->getParameter('uploads_trick_path'),
-                    $filename
-                );
+        // Save file.
+        $filename = md5(uniqid()) . '.' . $picture->guessExtension(); // Require php.ini : extension=fileinfo
+        $picture->move(
+            $this->getParameter('uploads_trick_path'),
+            $filename
+        );
 
-                // Create Picture entity
-                $pictureEntity = new Picture;
-                $pictureEntity->setName($filename);
+        $this->pictureService->crop($this->getParameter('uploads_trick_path') . '/' . $filename, 1.5);
+        // Create Picture entity
+        $pictureEntity = new Picture;
+        $pictureEntity->setName($filename);
 
-                // Attach to trick
-                $trick->addPicture($pictureEntity);
-            }
-        }
+        // Attach to trick
+        $trick->addPicture($pictureEntity);
 
         return $trick;
     }
 
-    private function addVideos($videos, $trick)
+    private function addVideo($url, $trick)
     {
-        $url_videos = $videos;
-        if ($url_videos) {
-            foreach ($url_videos as $url_video) {
-                if (!empty($url_video)) {
-                    $video = new Video;
-                    $video->setUrl($url_video);
-                    //$this->em->persist($video);
-                    $trick->addVideo($video);
-                }
-            }
-        }
+        $video = new Video;
+        $video->setUrl($url);
+        //$this->em->persist($video);
+        $trick->addVideo($video);
 
         return $trick;
     }

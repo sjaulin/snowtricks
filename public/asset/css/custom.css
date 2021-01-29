@@ -1,6 +1,22 @@
-body {
+body nav {
+  color: white;
+}
+
+body nav .avatar {
+  width: 30px;
+  margin-right: 5px;
+}
+
+body .breadcrumb {
+  background-color: grey;
+}
+
+body main {
   padding-top: 4.5rem;
-  /* Forms */
+}
+
+body section {
+  padding-top: 1rem;
 }
 
 body .alert-verify_email_error {
@@ -32,25 +48,41 @@ body .trick-show .modal-dialog {
   max-width: 70%;
 }
 
-body .trick-show .modal-dialog .modal-content {
-  background-color: transparent;
-  border: 0;
-  max-width: 500px;
+body .trick-show .modal-dialog .modal-content .modal-header {
+  border-bottom: 0;
+}
+
+body .trick-show .modal-dialog .modal-content .modal-body {
+  text-align: center;
+  padding: 0;
+}
+
+body .trick-show .modal-dialog .modal-content .modal-body img {
+  margin: auto;
 }
 
 body .trick-show .modal-dialog .modal-content .close span {
   font-size: 1.5em;
 }
 
-body form {
+body .edit-page {
+  /* Forms */
+}
+
+body .edit-page form {
   margin-bottom: 1em;
 }
 
-body form #trick_description {
+body .edit-page form #trick_description {
   height: 100px;
 }
 
-body form .btn {
+body .edit-page form .btn {
   margin-top: 0.5em;
+}
+
+body footer {
+  background-color: #222;
+  padding: 2rem;
 }
 /*# sourceMappingURL=custom.css.map */

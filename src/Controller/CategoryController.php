@@ -11,6 +11,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * @Route("/admin")
+ */
 class CategoryController extends AbstractController
 {
     public function __construct(
@@ -20,7 +23,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/category", name="category_admin", methods={"GET"})
+     * @Route("/category", name="category_admin", methods={"GET"})
      */
     public function index(CategoryRepository $categoryRepository): Response
     {

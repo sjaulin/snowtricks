@@ -16,13 +16,15 @@
 				{{ form_row(form.category)}}
 			</div>
 			<div class="col">
-				{{ form_start(form) }}
-				{{ form_widget(form) }}
+				<h3>Photos</h3>
+				{% for i in 0..4 %}
+					{{ form_widget(attribute(form, 'picture_' ~ i)) }}
+				{% endfor %}
 
-				<h3>Vidéos</h3>
-				<div class="input_fields_wrap">
-					<a href="#" class="add_field_button">Ajouter une vidéo</a>
-				</div>
+				<h3>Videos</h3>
+				{% for i in 0..2 %}
+					{{ form_widget(attribute(form, 'video_' ~ i)) }}
+				{% endfor %}
 			</div>
 		</div>
 		<button class="btn btn-primary">Enregistrer</button>
@@ -31,5 +33,5 @@
 {% endblock %}
 
 {% block javascripts %}
-	<script src="{{ asset('asset/js/form.js') }}"></script>
+	<script src="{{ asset('asset/js/formCollection.js') }}"></script>
 {% endblock %}
