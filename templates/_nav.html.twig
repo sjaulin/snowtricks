@@ -13,16 +13,25 @@
 				{% endif %}
 				{% if is_granted('ROLE_ADMIN') == true %}
 					<li class="nav-item">
-						<a href="{{ path('trick_admin') }}" class="nav-link">Gestion des tricks</a>
+						<a href="{{ path('trick_admin') }}" class="nav-link">
+							<i class="fa fa-lock"></i>
+							Tricks
+						</a>
 					</li>
 					<li class="nav-item">
-						<a href="{{ path('category_admin')}}" class="nav-link">Gestion des catégories</a>
+						<a href="{{ path('category_admin')}}" class="nav-link">
+							<i class="fa fa-lock"></i>
+							Catégories</a>
 					</li>
 				{% endif %}
 			</ul>
 			<ul class="navbar-nav">
 				{% if app.user %}
 					<li class="nav-item">
+						{% if app.user.avatar %}
+							<img src="{{ src_user_base ~ app.user.avatar.name }}" class="avatar rounded-circle" alt="">
+						{% endif %}
+						<span class="pr-3">{{ app.user.pseudo }}</span>
 						<a href="{{ path('security_logout') }}" class="btn btn-danger">Logout</a>
 					</li>
 				{% else %}

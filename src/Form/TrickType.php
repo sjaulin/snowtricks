@@ -3,18 +3,23 @@
 namespace App\Form;
 
 use App\Entity\Trick;
+use App\Entity\Picture;
+use App\Form\VideoType;
 use App\Entity\Category;
+use App\Form\PictureType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class TrickType extends AbstractType
 {
+
     public function buildForm(
         FormBuilderInterface $builder,
         array $options
@@ -29,17 +34,36 @@ class TrickType extends AbstractType
                     Trick::CONSTRAINT_NAME_LENGTH_MAX . ' caractères',
             ])
             ->add('description', TextareaType::class, [])
-            ->add('pictures', FileType::class, [
-                'label' => 'Ajouter des photos',
-                'help' => 'Sélectionner plusieurs photos si nécessaire',
-                'multiple' => true,
-                'mapped' => false, // dot not link to database
-                'required' => false,
+
+            ->add('pictures', CollectionType::class, [
+                'entry_type' => PictureType::class,
+                'entry_options' => [
+                    'label' => false
+                ],
+                'label' => false,
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true
             ])
-            ->add('category', EntityType::class, [
-                'class' => Category::class,
-                'choice_label' => 'name',
+
+            ->add('videos', CollectionType::class, [
+                'entry_type' => VideoType::class,
+                'required' => false,
+                'entry_options' => [
+                    'label' => false
+                ],
+                'label' => false,
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
             ]);
+
+        $builder->add('category', EntityType::class, [
+            'class' => Category::class,
+            'choice_label' => 'name',
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

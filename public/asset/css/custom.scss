@@ -1,5 +1,20 @@
 body {
-  padding-top: 4.5rem;
+  nav {
+    color: white;
+    .avatar {
+      width: 30px;
+      margin-right: 5px;
+    }
+  }
+  .breadcrumb {
+    background-color: grey;
+  }
+  main {
+    padding-top: 4.5rem;
+  }
+  section {
+    padding-top: 1rem;
+  }
 
   .alert-verify_email_error {
     color: #721c24;
@@ -33,9 +48,16 @@ body {
     .modal-dialog {
       max-width: 70%;
       .modal-content {
-        background-color: transparent;
-        border: 0;
-        max-width: 500px;
+        .modal-header {
+          border-bottom: 0;
+        }
+        .modal-body {
+          text-align: center;
+          padding: 0;
+          img {
+            margin: auto;
+          }
+        }
         .close {
           span {
             font-size: 1.5em;
@@ -45,16 +67,23 @@ body {
     }
   }
 
-  /* Forms */
-  form {
-    margin-bottom: 1em;
+  .edit-page {
+    /* Forms */
+    form {
+      margin-bottom: 1em;
 
-    #trick_description {
-      height: 100px;
-    }
+      #trick_description {
+        height: 100px;
+      }
 
-    .btn {
-      margin-top: 0.5em;
+      .btn {
+        margin-top: 0.5em;
+      }
     }
+  }
+
+  footer {
+    background-color: #222;
+    padding: 2rem;
   }
 }

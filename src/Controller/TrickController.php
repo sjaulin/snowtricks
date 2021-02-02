@@ -8,32 +8,34 @@ use App\Entity\Comment;
 use App\Entity\Picture;
 use App\Form\TrickType;
 use App\Form\CommentType;
+use App\Service\FileService;
 use App\Repository\TrickRepository;
 use App\Repository\VideoRepository;
-use App\Repository\PictureRepository;
 use App\Repository\CategoryRepository;
+use App\Service\Image as ImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use PhpParser\Node\Expr\Instanceof_;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class TrickController extends AbstractController
 {
-
-    private $repository;
+    private $imageService;
+    private $fileService;
 
     public function __construct(
         TrickRepository $repository,
-        EntityManagerInterface $em,
-        SluggerInterface $slugger
+        EntityManagerInterface $em
     ) {
         $this->repository = $repository;
         $this->em = $em;
-        $this->slugger = $slugger;
     }
 
     /**
@@ -73,8 +75,6 @@ class TrickController extends AbstractController
             throw $this->createNotFoundException('category-not-found');
         }
 
-        $tricks = $category->getTricks();
-
         return $this->render('trick/list.html.twig', [
             'slug' => $slug,
             'category' => $category,
@@ -85,7 +85,7 @@ class TrickController extends AbstractController
      * @Route("trick/new", name="trick_new")
      * @IsGranted("ROLE_USER")
      */
-    public function new(Request $request)
+    public function new(Request $request, FileService $fileService, ImageService $imageService)
     {
         $trick = new Trick();
 
@@ -93,8 +93,25 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setOwner($this->getUser());
-            $this->addPictures($form->get('pictures')->getData(), $trick);
-            $this->addVideos($request->get('videos'), $trick);
+
+            // Save new pictures
+            $pictures = $trick->getPictures();
+            foreach ($pictures as $picture) {
+                /**
+                 * @var Picture $picture
+                 */
+                if ($picture->getFile()) {
+                    $filename = $fileService->save(
+                        $picture->getFile(),
+                        $this->getParameter('uploads_trick_path')
+                    );
+                    $imageService->crop($this->getParameter('uploads_trick_path') . '/' . $filename, 1.5);
+                    $picture->setName($filename);
+                    $picture->setTrick($trick);
+                } else {
+                    $trick->removePicture($picture); // Avoid Bug if a field of collection is empty.
+                }
+            }
 
             $this->em->persist($trick); // Also persist pictures et videos by cascade.
             $this->em->flush();
@@ -107,7 +124,7 @@ class TrickController extends AbstractController
         }
         return $this->render('trick/new.html.twig', [
             'trick' => $trick,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -151,47 +168,48 @@ class TrickController extends AbstractController
     public function edit(
         Trick $trick,
         Request $request,
-        PictureRepository $pictureRepository,
-        VideoRepository $videoRepository
+        FileService $fileService,
+        ImageService $imageService,
+        Filesystem $filesystem
     ) {
 
         if (!$this->isGranted('ENTITY_EDIT', $trick)) {
             throw new AccessDeniedHttpException("Vous ne pouvez pas modifier ce trick");
         }
 
-        $form = $this->createForm(TrickType::class, $trick);
+        $originalPictures = new ArrayCollection();
+        foreach ($trick->getPictures() as $picture) {
+            $originalPictures->add($picture);
+        }
 
+        $originalVideos = new ArrayCollection();
+        foreach ($trick->getVideos() as $video) {
+            $originalVideos->add($video);
+        }
+
+        $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->addPictures($form->get('pictures')->getData(), $trick);
-            $this->addVideos($request->get('videos'), $trick);
+            $formPictures = $form->getData()->getPictures()->toArray();
 
-            // Add Videos
-
-            // Delete images
-            $delete_pictures = $request->get('delete_pictures');
-            if ($delete_pictures) {
-                foreach ($delete_pictures as $key => $value) {
-                    if ($value === 'on') {
-                        $delete_picture = $pictureRepository->find($key);
-                        $trick->removePicture($delete_picture);
-                        $file = $this->getParameter('uploads_trick_directory') . '/' . $delete_picture->getName();
-                        if (is_file($file)) {
-                            unlink($file);
-                        }
+            if (!empty($formPictures)) {
+                foreach ($formPictures as $picture) {
+                    /** @var Picture $picture */
+                    $file = $picture->getFile();
+                    if ($file && $file instanceof UploadedFile) {
+                        $fileName = $fileService->save($file, $this->getParameter('uploads_trick_path'));
+                        $picture->setName($fileName);
                     }
                 }
             }
 
-            // Delete videos
-            $delete_videos = $request->get('delete_videos');
-            if ($delete_videos) {
-                foreach ($delete_videos as $key => $value) {
-                    if ($value === 'on') {
-                        $delete_video = $videoRepository->find($key);
-                        $trick->removeVideo($delete_video);
-                    }
+            // Delete old pictures
+            foreach ($originalPictures as $picture) {
+                /** @var Picture $picture */
+                if ($trick->getPictures()->contains($picture) === false) {
+                    $this->em->remove($picture);
+                    $filesystem->remove($this->getParameter('uploads_trick_path') . '/' . $picture->getName());
                 }
             }
 
@@ -244,43 +262,12 @@ class TrickController extends AbstractController
         throw $this->createNotFoundException('Trick does not exist');
     }
 
-    // TODO : Create service AND Doctrine EventListener
-    private function addPictures($pictures, $trick)
+    private function addVideo($url, $trick)
     {
-        if (!empty($pictures)) {
-            foreach ($pictures as $picture) {
-                // Save file.
-                $filename = md5(uniqid()) . '.' . $picture->guessExtension(); // Require php.ini : extension=fileinfo
-                $picture->move(
-                    $this->getParameter('uploads_trick_path'),
-                    $filename
-                );
-
-                // Create Picture entity
-                $pictureEntity = new Picture;
-                $pictureEntity->setName($filename);
-
-                // Attach to trick
-                $trick->addPicture($pictureEntity);
-            }
-        }
-
-        return $trick;
-    }
-
-    private function addVideos($videos, $trick)
-    {
-        $url_videos = $videos;
-        if ($url_videos) {
-            foreach ($url_videos as $url_video) {
-                if (!empty($url_video)) {
-                    $video = new Video;
-                    $video->setUrl($url_video);
-                    //$this->em->persist($video);
-                    $trick->addVideo($video);
-                }
-            }
-        }
+        $video = new Video;
+        $video->setUrl($url);
+        //$this->em->persist($video);
+        $trick->addVideo($video);
 
         return $trick;
     }

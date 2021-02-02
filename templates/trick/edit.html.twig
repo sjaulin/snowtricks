@@ -3,56 +3,31 @@
 {% block body %}
 	<div class="container mt-4">
 		<h1>Modifier la figure</h1>
-		{{ form_start(form) }}
+		{% include "trick/_form_standard_fields.html.twig" %}
 
-		{{ form_errors(form)}}
 
 		<div class="row">
 			<div class="col">
-				{{ form_row(form.name)}}
-				{{ form_row(form.description)}}
-				{{ form_row(form.category)}}
-			</div>
-			<div class="col">
 				<h3>Photos</h3>
-				<div class="row">
-					{% for picture in trick.pictures %}
-						<div class="col-4">
-							<p><img src="{{ src_trick_base ~ picture.name }}" alt="" width="100"></p>
-							<p><input name="delete_pictures[{{ picture.id }}]" type="checkbox">
-								Supprimer</p>
-						</div>
-					{% else %}
-						Pas de photo
-					{% endfor %}
-				</div>
-				{{ form_row(form.pictures)}}
-
-				<h3>Vidéos</h3>
-				<div class="row">
-					{% for video in trick.videos %}
-						<div class="col-4">
-							<div class="embed-responsive embed-responsive-16by9">
-								<iframe class="embed-responsive-item" src="{{ video.url }}" allowfullscreen></iframe>
-							</div>
-							<p><input name="delete_videos[{{ video.id }}]" type="checkbox">
-								Supprimer</p>
-						</div>
-					{% else %}
-						<div class="col">Pas de video</div>
-					{% endfor %}
-				</div>
-				<div class="input_fields_wrap">
-					<a href="#" class="add_field_button">Ajouter une vidéo</a>
-				</div>
+				{% include "trick/_manage_pictures.html.twig" %}
 			</div>
+
+			<div class="col">
+				<h3>Videos</h3>
+				{% include "trick/_manage_videos.html.twig" %}
+			</div>
+
 		</div>
 
-		<button class="btn btn-primary">Enregistrer</button>
+		<button class="btn btn-primary float-left mr-2">Enregistrer</button>
+
 		{{ form_end(form) }}
+		{% if is_granted('ENTITY_DELETE', trick) %}
+			{% include "trick/_delete_form.html.twig" %}
+		{% endif %}
 	</div>
 {% endblock %}
 
 {% block javascripts %}
-	<script src="{{ asset('asset/js/form.js') }}"></script>
+	<script src="{{ asset('asset/js/manage-collection-widget.js') }}"></script>
 {% endblock %}

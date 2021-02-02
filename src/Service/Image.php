@@ -4,7 +4,7 @@ namespace App\Service;
 
 use Exception;
 
-class Picture
+class Image
 {
 
     public function crop($filePath, $ratio)

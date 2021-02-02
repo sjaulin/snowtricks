@@ -1,0 +1,17 @@
+{# store the prototype on the data-prototype attribute #}
+<ul class="list-unstyled collection-fields-list" id="picture-fields-list" data-prototype="{{ form_widget(form.pictures.vars.prototype)|e }}" data-widget-tags="{{ '<li></li>'|e }}" data-widget-counter="{{ form.pictures|length }}">
+	{% for picture in form.pictures %}
+		<li>
+			{% if app.request.get('_route') == 'trick_edit' %}
+				{% if picture.vars.value.name is not empty %}
+					<img src="{{ src_trick_base ~ picture.vars.value.name }}" alt="" class="img-fluid">
+				{% endif %}
+				<a href="javascript:void(0);" class="remove_field float-right">Supprimer</a>
+			{% endif %}
+			{{ form_errors(picture) }}
+			{{ form_widget(picture) }}
+
+		</li>
+	{% endfor %}
+</ul>
+<a href="javascript:void(0);" class="add-another-collection-widget" data-list-selector="#picture-fields-list">Ajouter une photo</a>

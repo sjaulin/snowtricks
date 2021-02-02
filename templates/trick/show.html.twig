@@ -28,12 +28,6 @@
 					<i class="fa fa-pen" aria-hidden="true"></i>
 				</a>
 			{% endif %}
-
-			{% if is_granted('ENTITY_DELETE', trick) %}
-				<a href="{{ path('trick_delete', {'id' : trick.id }) }}" role="button" class="btn btn-danger btn-sm text-light" title="Supprimer">
-					<i class="fa fa-trash" aria-hidden="true"></i>
-				</a>
-			{% endif %}
 		</h1>
 
 

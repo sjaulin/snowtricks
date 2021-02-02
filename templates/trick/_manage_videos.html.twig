@@ -1,0 +1,18 @@
+{# store the prototype on the data-prototype attribute #}
+<ul class="list-unstyled collection-fields-list" id="video-fields-list" data-prototype="{{ form_widget(form.videos.vars.prototype)|e }}" data-widget-tags="{{ '<li></li>'|e }}" data-widget-counter="{{ form.videos|length }}">
+	{% for video in form.videos %}
+		<li>
+			{% if app.request.get('_route') == 'trick_edit' %}
+				{% if video.url is not empty %}
+					<div class="embed-responsive embed-responsive-16by9">
+						<iframe class="embed-responsive-item" src="{{ video.url }}" allowfullscreen></iframe>
+					</div>
+				{% endif %}
+			{% endif %}
+			{{ form_errors(video) }}
+			{{ form_widget(video) }}
+			<a href="javascript:void(0);" class="remove_field float-right">Supprimer</a>
+		</li>
+	{% endfor %}
+</ul>
+<a href="javascript:void(0);" class="add-another-collection-widget" data-list-selector="#video-fields-list">Ajouter une vidéo</a>
