@@ -208,7 +208,6 @@ class TrickController extends AbstractController
             foreach ($originalPictures as $picture) {
                 /** @var Picture $picture */
                 if ($trick->getPictures()->contains($picture) === false) {
-                    $this->em->remove($picture);
                     $filesystem->remove($this->getParameter('uploads_trick_path') . '/' . $picture->getName());
                 }
             }
@@ -232,7 +231,7 @@ class TrickController extends AbstractController
      * @Route("trick/{id}/delete", name="trick_delete")
      * @return Response
      */
-    public function delete(Trick $trick, Request $request)
+    public function delete(Trick $trick, Request $request, Filesystem $filesystem)
     {
 
         if (!$this->isGranted('ENTITY_DELETE', $trick)) {
@@ -250,7 +249,7 @@ class TrickController extends AbstractController
                         // TODO doctrine presave
                         $file = $this->getParameter('uploads_trick_directory') . '/' . $picture->getName();
                         if (is_file($file)) {
-                            unlink($file);
+                            $filesystem->remove($file);
                         }
                     }
                 }
@@ -260,15 +259,5 @@ class TrickController extends AbstractController
         }
 
         throw $this->createNotFoundException('Trick does not exist');
-    }
-
-    private function addVideo($url, $trick)
-    {
-        $video = new Video;
-        $video->setUrl($url);
-        //$this->em->persist($video);
-        $trick->addVideo($video);
-
-        return $trick;
     }
 }
