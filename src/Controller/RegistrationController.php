@@ -16,17 +16,17 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
-use App\Service\Picture as PictureService;
+use App\Service\Image as ImageService;
 
 class RegistrationController extends AbstractController
 {
     private $emailVerifier;
-    private $pictureService;
+    private $imageService;
 
-    public function __construct(EmailVerifier $emailVerifier, PictureService $pictureService)
+    public function __construct(EmailVerifier $emailVerifier, ImageService $imageService)
     {
         $this->emailVerifier = $emailVerifier;
-        $this->pictureService = $pictureService;
+        $this->imageService = $imageService;
     }
 
     /**
@@ -57,8 +57,8 @@ class RegistrationController extends AbstractController
                 $filename
             );
             $filePath = $avatarDirectory . '/' . $filename;
-            $this->pictureService->crop($filePath, 1);
-            $this->pictureService->scale($avatarDirectory . '/' . $filename, 200, 200);
+            $this->imageService->crop($filePath, 1);
+            $this->imageService->scale($avatarDirectory . '/' . $filename, 200, 200);
             $file = $avatarDirectory . '/' . $filename;
             // Create Avatar entity
             $avatar = new Avatar;

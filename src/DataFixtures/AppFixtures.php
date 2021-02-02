@@ -14,7 +14,7 @@ use App\Entity\Comment;
 use App\Entity\User;
 use App\Entity\Video;
 use App\Entity\Avatar;
-use App\Service\Picture as PictureService;
+use App\Service\Image as ImageService;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Faker\Factory;
 use App\DataFixtures\InitFixtures;
@@ -23,16 +23,16 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
 {
     private $params;
     protected $encoder;
-    protected $pictureService;
+    protected $imageService;
 
     public function __construct(
         ParameterBagInterface $params,
         UserPasswordEncoderInterface $encoder,
-        PictureService $pictureService
+        ImageService $imageService
     ) {
         $this->params = $params;
         $this->encoder = $encoder;
-        $this->pictureService = $pictureService;
+        $this->imageService = $imageService;
     }
 
     public function load(ObjectManager $manager)
@@ -110,7 +110,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
                 for ($p = 0; $p < 2; $p++) {
                     $fileName = $picturesList[0];
                     $filePath = $dir . '/' . $fileName;
-                    $this->pictureService->crop($filePath, 1.5);
+                    $this->imageService->crop($filePath, 1.5);
                     $picture = new Picture;
                     $picture->setName($fileName);
                     $trick->addPicture($picture);

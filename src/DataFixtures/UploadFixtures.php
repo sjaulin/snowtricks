@@ -6,19 +6,15 @@ use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use App\Service\Picture as PictureService;
 
 class UploadFixtures extends Fixture implements FixtureGroupInterface
 {
     private $params;
-    protected $pictureService;
 
     public function __construct(
-        ParameterBagInterface $params,
-        PictureService $pictureService
+        ParameterBagInterface $params
     ) {
         $this->params = $params;
-        $this->pictureService = $pictureService;
     }
 
     public function load(ObjectManager $manager)

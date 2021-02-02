@@ -6,32 +6,27 @@
 {% block body %}
 	<div class="container mt-4">
 		<h1>Ajouter un trick</h1>
-		{{ form_start(form) }}
-		{{ form_errors(form)}}
+		{% include "trick/_form_standard_fields.html.twig" %}
+
 
 		<div class="row">
 			<div class="col">
-				{{ form_row(form.name)}}
-				{{ form_row(form.description)}}
-				{{ form_row(form.category)}}
-			</div>
-			<div class="col">
 				<h3>Photos</h3>
-				{% for i in 0..4 %}
-					{{ form_widget(attribute(form, 'picture_' ~ i)) }}
-				{% endfor %}
-
-				<h3>Videos</h3>
-				{% for i in 0..2 %}
-					{{ form_widget(attribute(form, 'video_' ~ i)) }}
-				{% endfor %}
+				{% include "trick/_manage_pictures.html.twig" %}
 			</div>
+
+			<div class="col">
+				<h3>Videos</h3>
+				{% include "trick/_manage_videos.html.twig" %}
+			</div>
+
 		</div>
+
 		<button class="btn btn-primary">Enregistrer</button>
 		{{ form_end(form) }}
 	</div>
 {% endblock %}
 
 {% block javascripts %}
-	<script src="{{ asset('asset/js/formCollection.js') }}"></script>
+	<script src="{{ asset('asset/js/manage-collection-widget.js') }}"></script>
 {% endblock %}

@@ -5,7 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Picture;
 use App\DataFixtures\TrickFixtures;
 use Doctrine\Persistence\ObjectManager;
-use App\Service\Picture as PictureService;
+use App\Service\Image as ImageService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -14,14 +14,14 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class PictureFixtures extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
 {
 
-    protected $pictureService;
+    protected $imageService;
 
     public function __construct(
         ParameterBagInterface $params,
-        PictureService $pictureService
+        ImageService $imageService
     ) {
         $this->params = $params;
-        $this->pictureService = $pictureService;
+        $this->imageService = $imageService;
     }
 
     public function load(ObjectManager $manager)
@@ -66,7 +66,7 @@ class PictureFixtures extends Fixture implements FixtureGroupInterface, Dependen
             $filePath = $this->params->get('uploads_trick_path') . '/' . $fileName;
             $url = !empty($urls[$i]) ? $urls[$i] : $urls[0];
             if (file_put_contents($filePath, file_get_contents($url))) {
-                $this->pictureService->crop($filePath, 1.5);
+                $this->imageService->crop($filePath, 1.5);
                 $picture = new Picture;
                 $picture->setName($fileName);
                 $picture->setTrick($tricks[0]);

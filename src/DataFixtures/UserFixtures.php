@@ -6,10 +6,8 @@ use Faker\Factory;
 use App\Entity\User;
 use App\Entity\Avatar;
 use Doctrine\Persistence\ObjectManager;
-use App\Service\Picture as PictureService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -19,16 +17,13 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
 
     private $params;
     protected $encoder;
-    protected $pictureService;
 
     public function __construct(
         ParameterBagInterface $params,
-        UserPasswordEncoderInterface $encoder,
-        PictureService $pictureService
+        UserPasswordEncoderInterface $encoder
     ) {
         $this->params = $params;
         $this->encoder = $encoder;
-        $this->pictureService = $pictureService;
     }
 
     public function load(ObjectManager $manager)
