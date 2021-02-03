@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class TrickController extends AbstractController
 {
 
-    const TRICK_NUMBER = 2;
+    const TRICK_NUMBER = 4;
 
     public function __construct(
         TrickRepository $repository,
@@ -73,7 +73,7 @@ class TrickController extends AbstractController
     public function trickListHtml(Request $request, TrickRepository $repository): Response
     {
 
-        $offset = ($request->get('page') - 1) * self::TRICK_NUMBER;
+        $offset = ($request->get('npage') - 1) * self::TRICK_NUMBER;
         $tricks = $repository->findBy([], null, self::TRICK_NUMBER, $offset);
         return $this->render('trick/_list.html.twig', [
             'tricks' => $tricks
