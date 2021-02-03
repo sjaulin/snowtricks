@@ -3,14 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Trick;
-use App\Entity\Video;
 use App\Entity\Comment;
 use App\Entity\Picture;
 use App\Form\TrickType;
 use App\Form\CommentType;
 use App\Service\FileService;
 use App\Repository\TrickRepository;
-use App\Repository\VideoRepository;
 use App\Repository\CategoryRepository;
 use App\Service\Image as ImageService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\ArrayCollection;
-use PhpParser\Node\Expr\Instanceof_;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -27,8 +24,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class TrickController extends AbstractController
 {
-    private $imageService;
-    private $fileService;
+
+    const TRICK_NUMBER = 2;
 
     public function __construct(
         TrickRepository $repository,
@@ -55,8 +52,30 @@ class TrickController extends AbstractController
     public function home(TrickRepository $repository): Response
     {
 
-        $tricks = $repository->findAll();
+        $trickCount = $repository->count([]);
+        $pageCount = ceil($trickCount / self::TRICK_NUMBER);
+        $firstTricks = $repository->findBy([], null, self::TRICK_NUMBER, 0);
+
         return $this->render('home.html.twig', [
+            'tricks' => $firstTricks,
+            'pagecount' => $pageCount,
+            'nbperpage' => self::TRICK_NUMBER
+        ]);
+    }
+
+    /**
+     * Return tricks HTML
+     *
+     * @Route ("/trick/listhtml", name="trick_listhtml")
+     * @param TrickRepository $repository
+     * @return Response
+     */
+    public function trickListHtml(Request $request, TrickRepository $repository): Response
+    {
+
+        $offset = ($request->get('page') - 1) * self::TRICK_NUMBER;
+        $tricks = $repository->findBy([], null, self::TRICK_NUMBER, $offset);
+        return $this->render('trick/_list.html.twig', [
             'tricks' => $tricks
         ]);
     }

@@ -14,7 +14,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class PictureFixtures extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
 {
 
-    protected $imageService;
+    private $imageService;
+    private $params;
 
     public function __construct(
         ParameterBagInterface $params,
