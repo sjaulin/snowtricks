@@ -1,24 +1,32 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/aa4d674d40fc4fbaa1ce6416ec722786)](https://www.codacy.com/gh/sjaulin/snowtricks/dashboard?utm_source=github.com&utm_medium=referral&utm_content=sjaulin/snowtricks&utm_campaign=Badge_Grade)
+# Snowtricks
+
+Community Website made with Symfony framework for sharing snowboard tricks.
+
+[![Maintainability](https://api.codeclimate.com/v1/badges/3ff9fec3772a81e00946/maintainability)](https://codeclimate.com/github/sjaulin/snowtricks/maintainability)
+
+## Installation
 
 
-## Fixtures
-Init app with sample data :
+1. Configure file .env.local using file .env.local.example as a template.
+
+2. Install dependancies :
+```
+composer install
+```
+3. Create the database if not exist
+```
+php bin/console doctrine:database:create
+```
+4. Create database tables
+```
+php bin/console doctrine:migrations:migrate
+```
+5. If necessary, create fake content and demo users
 ```
 php bin/console doctrine:fixtures:load --env=dev --group=app
 ```
-
-## PHPUnit
-
-Run single test
+6. Once ready for production, modify the environment in .env file
 ```
-symfony php bin/phpunit .\tests\Repository\UserRepositoryTest.php
+# ./.env
+APP_ENV=prod
 ```
-
-## Test Coverage
-
-Update report
-```
-symfony php bin/phpunit --coverage-html public/test-coverage
-```
-View Report 
-https://localhost:8000/test-coverage/
