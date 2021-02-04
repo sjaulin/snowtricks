@@ -101,7 +101,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
                 $trick = new Trick();
                 $trick->setName(ucwords($faker->unique()->word()))
                     ->setOwner($users[0])
-                    ->setDescription($faker->text(150))
+                    ->setDescription($faker->text(rand(320, 455)))
                     ->setCreatedAt(new \DateTime)
                     ->setCategory($category);
 

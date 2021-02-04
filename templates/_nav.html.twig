@@ -27,14 +27,15 @@
 				{% endif %}
 			</ul>
 			<ul class="navbar-nav">
+
 				{% if app.user %}
 					<li class="nav-item">
-						<a href="#" class="nav-link">
+						<span class="nav-link">
 							{% if app.user.avatar %}
 								<img src="{{ src_user_base ~ app.user.avatar.name }}" class="avatar rounded-circle" alt="">
 							{% endif %}
 							{{ app.user.pseudo }}
-						</a>
+						</span>
 					</li>
 					<li class="nav-item">
 						<a href="{{ path('security_logout') }}" class="btn btn-danger">Logout</a>
