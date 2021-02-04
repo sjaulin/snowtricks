@@ -1,0 +1,16 @@
+@startuml
+title Cas d'utilisation : Ajouter un commentaire
+left to right direction
+
+actor "Visiteur" as vi
+rectangle AjouterCommentaire {
+    usecase "Ajouter un commentaire" as UC1
+    usecase "S'authentifier" as UC2
+    usecase "Consulter le trick" as UC3
+
+    UC1 -left-> UC2 : include
+    UC1 -up-> UC3 : include
+}
+vi -left-> UC1
+
+@enduml

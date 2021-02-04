@@ -1,0 +1,14 @@
+@startuml
+title Séquence : Ajouter un commentaire
+actor Utilisateur
+participant Interface
+database BDD
+Utilisateur -> Interface : Clique sur le détail d'un trick
+Interface -> BDD : TrickRepository->find($trickId)
+BDD --> Interface : :trick
+Interface --> Utilisateur : Affichage du trick
+Utilisateur -> Interface : Soumission du formulaire
+Interface -> BDD : EntityManagerInterface->persist($trickData);
+BDD --> Interface : ok
+Interface --> Utilisateur : Message de confirmation
+@enduml
