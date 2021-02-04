@@ -14,7 +14,7 @@ class FileService
      *
      * @param UploadedFile $file
      * @param string $directory
-     * @return void
+     * @return string $filename
      */
     public function save(UploadedFile $file, $directory)
     {

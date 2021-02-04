@@ -3,15 +3,15 @@
 	{% for video in form.videos %}
 		<li>
 			{% if app.request.get('_route') == 'trick_edit' %}
-				{% if video.url is not empty %}
+				{% if video.vars.value.url is not empty %}
 					<div class="embed-responsive embed-responsive-16by9">
-						<iframe class="embed-responsive-item" src="{{ video.url }}" allowfullscreen></iframe>
+						<iframe class="embed-responsive-item" src="{{ video.vars.value.url }}" allowfullscreen></iframe>
 					</div>
 				{% endif %}
 			{% endif %}
 			{{ form_errors(video) }}
 			{{ form_widget(video) }}
-			<a href="javascript:void(0);" class="remove_field float-right">Supprimer</a>
+			<a href="javascript:void(0);" class="remove_field">Supprimer</a>
 		</li>
 	{% endfor %}
 </ul>

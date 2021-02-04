@@ -8,7 +8,6 @@ use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -16,11 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class CategoryController extends AbstractController
 {
-    public function __construct(
-        SluggerInterface $slugger
-    ) {
-        $this->slugger = $slugger;
-    }
 
     /**
      * @Route("/category", name="category_admin", methods={"GET"})

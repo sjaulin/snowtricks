@@ -19,12 +19,15 @@
 
 		</div>
 
-		<button class="btn btn-primary float-left mr-2">Enregistrer</button>
+		<section class="form-end">
+			<button class="btn btn-primary float-left mr-2">Enregistrer</button>
+			{{ form_end(form) }}
 
-		{{ form_end(form) }}
-		{% if is_granted('ENTITY_DELETE', trick) %}
-			{% include "trick/_delete_form.html.twig" %}
-		{% endif %}
+			{% if is_granted('ENTITY_DELETE', trick) %}
+				{% include "trick/_delete_form.html.twig" %}
+			{% endif %}
+		</section>
+
 	</div>
 {% endblock %}
 

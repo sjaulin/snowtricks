@@ -10,20 +10,23 @@
 
 
 		<div class="row">
-			<div class="col">
+
+			<div class="col-12 col-md-6 mb-3">
 				<h3>Photos</h3>
 				{% include "trick/_manage_pictures.html.twig" %}
 			</div>
 
-			<div class="col">
+			<div class="col-12 col-md-6 mb-3">
 				<h3>Videos</h3>
 				{% include "trick/_manage_videos.html.twig" %}
 			</div>
 
 		</div>
 
-		<button class="btn btn-primary">Enregistrer</button>
-		{{ form_end(form) }}
+		<section>
+			<button class="btn btn-primary">Enregistrer</button>
+			{{ form_end(form) }}
+		</section>
 	</div>
 {% endblock %}
 

@@ -8,6 +8,7 @@ parameters:
   uploads_user_directory: "uploads/user"
   uploads_trick_path: "%kernel.project_dir%/public/%uploads_trick_directory%"
   uploads_user_path: "%kernel.project_dir%/public/%uploads_user_directory%"
+  app.emailfrom: '%env(APP_EMAIL_FROM)%'
 
 services:
   # default configuration for services in *this* file

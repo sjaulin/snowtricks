@@ -1,5 +1,15 @@
-<form method="post" action="{{ path('trick_delete', {'id': trick.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');" class="float-left">
+<form method="post" action="{{ path('trick_delete', {'id': trick.id}) }}" onsubmit="return confirm('Êtes-vous sûres de vouloir supprimer ce trick ?');">
 	<input type="hidden" name="_method" value="DELETE">
 	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
-	<button class="btn btn-danger">Supprimer</button>
+	{% if app.request.get('_route') == 'trick_edit' %}
+		<button class="btn btn-danger text-light">
+			Supprimer
+		</button>
+
+	{% else %}
+		<button class="btn btn-danger btn-sm text-light">
+			<span class="fa fa-trash" aria-hidden="true"></span>
+		</button>
+	{% endif %}
+
 </form>

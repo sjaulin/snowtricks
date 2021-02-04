@@ -3,22 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\Trick;
-use App\Entity\Video;
 use App\Entity\Comment;
 use App\Entity\Picture;
 use App\Form\TrickType;
 use App\Form\CommentType;
 use App\Service\FileService;
 use App\Repository\TrickRepository;
-use App\Repository\VideoRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Service\Image as ImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\ArrayCollection;
-use PhpParser\Node\Expr\Instanceof_;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -27,8 +25,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class TrickController extends AbstractController
 {
-    private $imageService;
-    private $fileService;
+
+    const TRICK_NUMBER = 4;
+    const COMMENT_NUMBER = 5;
 
     public function __construct(
         TrickRepository $repository,
@@ -55,8 +54,30 @@ class TrickController extends AbstractController
     public function home(TrickRepository $repository): Response
     {
 
-        $tricks = $repository->findAll();
+        $trickCount = $repository->count([]);
+        $pageCount = ceil($trickCount / self::TRICK_NUMBER);
+        $firstTricks = $repository->findBy([], null, self::TRICK_NUMBER, 0);
+
         return $this->render('home.html.twig', [
+            'tricks' => $firstTricks,
+            'pagecount' => $pageCount,
+            'nbperpage' => self::TRICK_NUMBER
+        ]);
+    }
+
+    /**
+     * Return tricks HTML
+     *
+     * @Route ("/trick/listhtml", name="trick_listhtml")
+     * @param TrickRepository $repository
+     * @return Response
+     */
+    public function trickListHtml(Request $request, TrickRepository $repository): Response
+    {
+
+        $offset = ($request->get('npage') - 1) * self::TRICK_NUMBER;
+        $tricks = $repository->findBy([], null, self::TRICK_NUMBER, $offset);
+        return $this->render('trick/_list.html.twig', [
             'tricks' => $tricks
         ]);
     }
@@ -75,9 +96,11 @@ class TrickController extends AbstractController
             throw $this->createNotFoundException('category-not-found');
         }
 
+        $tricks = $category->getTricks();
         return $this->render('trick/list.html.twig', [
             'slug' => $slug,
             'category' => $category,
+            'tricks' => $tricks,
         ]);
     }
 
@@ -129,10 +152,21 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Display a trick
+     *
      * @Route("/{category_slug}/{slug}", name="trick_show")
+     * @param string $slug
+     * @param Request $request
+     * @param TrickRepository $trickRepository
+     * @param CommentRepository $commentRepository
+     * @return Response
      */
-    public function show($slug, Request $request, TrickRepository $trickRepository): Response
-    {
+    public function show(
+        $slug,
+        Request $request,
+        TrickRepository $trickRepository,
+        CommentRepository $commentRepository
+    ): Response {
 
         $trick = $trickRepository->findOneBy([
             'slug' => $slug
@@ -146,6 +180,11 @@ class TrickController extends AbstractController
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
+
+        $commentCount = $commentRepository->count([]);
+        $pageCount = ceil($commentCount / self::COMMENT_NUMBER);
+        $firstComments = $commentRepository->findBy([], null, self::COMMENT_NUMBER, 0);
+
         if ($this->isGranted('ROLE_USER') && $form->isSubmitted() && $form->isValid()) {
             $comment->setTrick($trick);
             $comment->setUser($this->getUser());
@@ -157,10 +196,28 @@ class TrickController extends AbstractController
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
             'form' => $form->createView(),
-            'comments' => $trick->getComments()
+            'pagecount' => $pageCount,
+            'nbperpage' => self::COMMENT_NUMBER,
+            'comments' => $firstComments
         ]);
     }
 
+    /**
+     * Return Comments list HTML
+     *
+     * @Route ("/comment/listhtml", name="comment_listhtml", priority=1)
+     * @param CommentRepository $repository
+     * @return Response
+     */
+    public function commentListHtml(Request $request, CommentRepository $repository): Response
+    {
+
+        $offset = ($request->get('npage') - 1) * self::COMMENT_NUMBER;
+        $comments = $repository->findBy([], null, self::COMMENT_NUMBER, $offset);
+        return $this->render('comment/_list.html.twig', [
+            'comments' => $comments
+        ]);
+    }
 
     /**
      * @Route("trick/{id}/edit", name="trick_edit")
@@ -208,7 +265,6 @@ class TrickController extends AbstractController
             foreach ($originalPictures as $picture) {
                 /** @var Picture $picture */
                 if ($trick->getPictures()->contains($picture) === false) {
-                    $this->em->remove($picture);
                     $filesystem->remove($this->getParameter('uploads_trick_path') . '/' . $picture->getName());
                 }
             }
@@ -232,7 +288,7 @@ class TrickController extends AbstractController
      * @Route("trick/{id}/delete", name="trick_delete")
      * @return Response
      */
-    public function delete(Trick $trick, Request $request)
+    public function delete(Trick $trick, Request $request, Filesystem $filesystem)
     {
 
         if (!$this->isGranted('ENTITY_DELETE', $trick)) {
@@ -250,7 +306,7 @@ class TrickController extends AbstractController
                         // TODO doctrine presave
                         $file = $this->getParameter('uploads_trick_directory') . '/' . $picture->getName();
                         if (is_file($file)) {
-                            unlink($file);
+                            $filesystem->remove($file);
                         }
                     }
                 }
@@ -260,15 +316,5 @@ class TrickController extends AbstractController
         }
 
         throw $this->createNotFoundException('Trick does not exist');
-    }
-
-    private function addVideo($url, $trick)
-    {
-        $video = new Video;
-        $video->setUrl($url);
-        //$this->em->persist($video);
-        $trick->addVideo($video);
-
-        return $trick;
     }
 }
