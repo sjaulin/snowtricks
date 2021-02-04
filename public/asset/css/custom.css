@@ -29,6 +29,11 @@ body#route-home section#tricks .container {
   margin-top: 2rem;
 }
 
+body .avatar {
+  width: 30px;
+  margin-right: 5px;
+}
+
 body main {
   padding-top: 54px;
 }
@@ -66,15 +71,6 @@ body .trick-show .badge a:visited {
 
 body .trick-show h2 {
   margin-top: 1em;
-}
-
-body .trick-show #comments {
-  width: 70%;
-}
-
-body .trick-show #comments .comment .avatar {
-  width: 30px;
-  margin-right: 5px;
 }
 
 body .trick-show .modal-dialog {

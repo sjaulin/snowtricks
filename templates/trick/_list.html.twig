@@ -10,7 +10,8 @@
 				{% endif %}
 			</div>
 			<div class="card-body">
-				<h5 class="card-title">
+				<h5 class="card-title clearfix">
+
 					<a href="{{ path('trick_show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}" class="float-left mr-2">{{ trick.name }}</a>
 					{% if is_granted('ENTITY_EDIT', trick) %}
 						<a href="{{ path('trick_edit', {'id' : trick.id }) }}" role="button" class="btn btn-primary btn-sm text-light float-left mr-2" title="Modifier">
@@ -21,8 +22,11 @@
 						{% include "trick/_delete_form.html.twig" %}
 					{% endif %}
 				</h5>
-				<p class="card-text">
+				<p class="card-text clearfix">
 					{% if trick.owner is not empty %}
+						{% if trick.owner.avatar is not empty %}
+							<img src="{{ asset(src_user_base ~ trick.owner.avatar.name) }}" class="avatar rounded-circle" alt="{{ trick.owner.pseudo }}">
+						{% endif %}
 						@{{ trick.owner.pseudo }},
 					{% endif %}
 					{{ trick.createdAt|date("m/d/Y") }}
