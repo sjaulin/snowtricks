@@ -4,38 +4,41 @@
 {% endblock %}
 {% block body %}
 	<div class="container">
-		<h1>Gestion des tricks</h1>
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th>Nom</th>
-					<th>Id</th>
-					<th>Slug</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for trick in tricks %}
+		<section>
+			<h1>Gestion des tricks</h1>
+			<table class="table table-striped">
+				<thead>
 					<tr>
-						<td class="align-middle">
-							<a href="{{ path('trick_show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">{{ trick.name }}</a>
-						</td>
-						<td class="align-middle">{{ trick.id }}</td>
-						<td class="align-middle">{{ trick.slug }}</td>
-						<td class="align-middle" width="100">
-							<a href="{{ path('trick_edit', {id: trick.id}) }}" class="btn btn-warning">Modifier</a>
-						</td>
-						<td>
-							{{ include('trick/_delete_form.html.twig') }}
-						</td>
+						<th>Nom</th>
+						<th>Id</th>
+						<th>Slug</th>
+						<th>Actions</th>
 					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{% for trick in tricks %}
+						<tr>
+							<td class="align-middle">
+								<a href="{{ path('trick_show', {'category_slug' : trick.category.slug, 'slug' : trick.slug}) }}">{{ trick.name }}</a>
+							</td>
+							<td class="align-middle">{{ trick.id }}</td>
+							<td class="align-middle">{{ trick.slug }}</td>
+							<td class="align-middle" width="100">
+								<a href="{{ path('trick_edit', {id: trick.id}) }}" class="btn btn-sm btn-warning float-left mr-1">
+									<i class="fa fa-pen" aria-hidden="true"></i>
+								</a>
+								{{ include('trick/_delete_form.html.twig') }}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 
-		<div class="container">
-			<a href="{{ path('trick_new') }}" class="btn btn-primary">Ajouter un trick</a>
-		</div>
+			<div class="container">
+				<a href="{{ path('trick_new') }}" class="btn btn-primary">Ajouter un trick</a>
+			</div>
 
+
+		</section>
 	</div>
 {% endblock %}

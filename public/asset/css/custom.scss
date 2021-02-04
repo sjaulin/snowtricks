@@ -32,8 +32,9 @@ body {
   main {
     padding-top: 54px;
   }
+
   nav {
-    height: 54px;
+    min-height: 54px;
     background-color: #222;
     color: white;
     a {
@@ -44,9 +45,7 @@ body {
       margin-right: 5px;
     }
   }
-  .breadcrumb {
-    background-color: grey;
-  }
+
   section {
     padding-top: 1rem;
   }
@@ -117,8 +116,23 @@ body {
     }
   }
 
+  .collection-fields-list {
+    li {
+      border: 1px dotted #666;
+      padding: 1rem;
+    }
+  }
+
+  .form-end {
+    fieldset {
+      &.form-group {
+        margin-bottom: 0;
+      }
+    }
+  }
   footer {
     background-color: #222;
     padding: 2rem;
+    color: white;
   }
 }

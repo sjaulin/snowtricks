@@ -1,7 +1,7 @@
 //https://symfony.com/doc/current/reference/forms/types/collection.html
 jQuery(document).ready(function () {
 
-    var wrapper    = jQuery(".collection-fields-list"); //Input fields wrapper
+    var wrapper = jQuery(".collection-fields-list"); //Input fields wrapper
 
     jQuery('.add-another-collection-widget').click(function (e) {
 
@@ -25,11 +25,11 @@ jQuery(document).ready(function () {
         newElem.appendTo(list);
     });
 
-    jQuery(wrapper).on("click",".remove_field", function(e){ 
+    jQuery(wrapper).on("click", ".remove_field", function (e) {
         e.preventDefault();
-		jQuery(this).parent('li').remove(); //remove inout field
+        jQuery(this).parent('li').remove(); //remove inout field
     })
-    
+
 });
 
 

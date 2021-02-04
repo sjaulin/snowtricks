@@ -5,36 +5,42 @@
 
 {% block body %}
 	<div class="container">
-		<h1>Gestion des catégories</h1>
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th>Id</th>
-					<th>Name</th>
-					<th>Slug</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for category in categories %}
+		<section>
+			<h1>Gestion des catégories</h1>
+			<table class="table table-striped">
+				<thead>
 					<tr>
-						<td>{{ category.id }}</td>
-						<td>{{ category.name }}</td>
-						<td>{{ category.slug }}</td>
-						<td>
-							<a href="{{ path('category_edit', {'id': category.id}) }}">Modifier</a>
-						</td>
+						<th>Id</th>
+						<th>Name</th>
+						<th>Slug</th>
+						<th>Actions</th>
 					</tr>
-				{% else %}
-					<tr>
-						<td colspan="4">Aucune catégorie</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-		<div class="container">
-			<a href="{{ path('category_new') }}" class="btn btn-primary">Ajouter une catégorie</a>
-		</div>
+				</thead>
+				<tbody>
+					{% for category in categories %}
+						<tr>
+							<td>{{ category.id }}</td>
+							<td>{{ category.name }}</td>
+							<td>{{ category.slug }}</td>
+							<td>
+								<a href="{{ path('category_edit', {'id': category.id}) }}">
+									<i class="fa fa-pen" aria-hidden="true"></i>
+								</a>
+
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="4">Aucune catégorie</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<div class="container">
+				<a href="{{ path('category_new') }}" class="btn btn-primary">Ajouter une catégorie</a>
+			</div>
+
+		</section>
 	</div>
 
 

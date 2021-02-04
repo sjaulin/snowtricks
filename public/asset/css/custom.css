@@ -34,7 +34,7 @@ body main {
 }
 
 body nav {
-  height: 54px;
+  min-height: 54px;
   background-color: #222;
   color: white;
 }
@@ -46,10 +46,6 @@ body nav a {
 body nav .avatar {
   width: 30px;
   margin-right: 5px;
-}
-
-body .breadcrumb {
-  background-color: grey;
 }
 
 body section {
@@ -118,8 +114,18 @@ body .edit-page form .btn {
   margin-top: 0.5em;
 }
 
+body .collection-fields-list li {
+  border: 1px dotted #666;
+  padding: 1rem;
+}
+
+body .form-end fieldset.form-group {
+  margin-bottom: 0;
+}
+
 body footer {
   background-color: #222;
   padding: 2rem;
+  color: white;
 }
 /*# sourceMappingURL=custom.css.map */

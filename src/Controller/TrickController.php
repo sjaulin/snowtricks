@@ -96,9 +96,11 @@ class TrickController extends AbstractController
             throw $this->createNotFoundException('category-not-found');
         }
 
+        $tricks = $category->getTricks();
         return $this->render('trick/list.html.twig', [
             'slug' => $slug,
             'category' => $category,
+            'tricks' => $tricks,
         ]);
     }
 

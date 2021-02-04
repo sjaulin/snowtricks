@@ -11,90 +11,116 @@
 {% block body %}
 
 	<div class="container trick-show">
-		<ol class="breadcrumb">
-			<li class="breadcrumb-item">
-				<a href="{{ path('home') }}">Accueil</a>
-			</li>
-			<li class="breadcrumb-item">
-				<a href="{{ path('trick_list', {'slug' : trick.category.slug }) }}">{{ trick.category.name }}</a>
-			</li>
-			<li class="breadcrumb-item active" aria-current="page">{{ trick.name }}</li>
-		</ol>
+		<section>
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item">
+					<a href="{{ path('home') }}">Accueil</a>
+				</li>
+				<li class="breadcrumb-item">
+					<a href="{{ path('trick_list', {'slug' : trick.category.slug }) }}">{{ trick.category.name }}</a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">{{ trick.name }}</li>
+			</ol>
 
 
-		<h1>{{trick.name}}
-			{% if is_granted('ENTITY_EDIT', trick) %}
-				<a href="{{ path('trick_edit', {'id' : trick.id }) }}" role="button" class="btn btn-primary btn-sm text-light" title="Modifier">
-					<i class="fa fa-pen" aria-hidden="true"></i>
-				</a>
-			{% endif %}
-		</h1>
-
-
-		<div class="row">
-			<div class="col sm-12">
-				{% if picture is not empty %}
-					<img class="img-fluid" src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}"/>
+			<h1>{{trick.name}}
+				{% if is_granted('ENTITY_EDIT', trick) %}
+					<a href="{{ path('trick_edit', {'id' : trick.id }) }}" role="button" class="btn btn-primary btn-sm text-light" title="Modifier">
+						<i class="fa fa-pen" aria-hidden="true"></i>
+					</a>
 				{% endif %}
-			</div>
-			<div class="col">
-				{% include "trick/_category_badge.html.twig" %}
-				<p>{{trick.description}}</p>
-			</div>
-		</div>
-		{% if trick.pictures|length > 1 %}
-			<h2>Photos</h2>
-			<div id="pictures">
-				{% for picture in trick.pictures|slice(1) %}
-					{% include "trick/_modal.html.twig" %}
-				{% endfor %}
-			</div>
-		{% endif %}
+			</h1>
 
-		{% if trick.videos is not empty %}
-			<h2>Videos</h2>
-			<div id="videos">
-				<div class="row">
-					{% for video in trick.videos %}
-						<div class="col-3">
-							<div class="embed-responsive embed-responsive-16by9">
-								<iframe class="embed-responsive-item" src="{{ video.url }}" allowfullscreen></iframe>
-							</div>
-						</div>
-					{% endfor %}
+
+			<div class="row">
+				<div class="col sm-12">
+					{% if picture is not empty %}
+						<img class="img-fluid" src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}"/>
+					{% endif %}
+				</div>
+				<div class="col">
+					{% include "trick/_category_badge.html.twig" %}
+					<p>{{trick.description}}</p>
+				</div>
+			</div>
+
+		</section>
+
+		{% if trick.pictures|length > 1 or trick.videos is not empty %}
+			<section>
+				<div class="text-center">
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseMedias" aria-expanded="false" aria-controls="collapseMedias">
+						<i class="fa fa-photo-video" aria-hidden="true"></i>
+					</button>
 				</div>
 
-			</div>
+				<div class="collapse" id="collapseMedias">
+					{% if trick.pictures|length > 1 %}
+						<h2>Photos</h2>
+						<div id="pictures">
+							<div class="row">
+								{% for picture in trick.pictures|slice(1) %}
+									<div class="col-12 col-sm-3 p-3">
+										{% include "trick/_modal.html.twig" %}
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
+
+					{% if trick.videos is not empty %}
+						<h2>Videos</h2>
+						<div id="videos">
+							<div class="row">
+								{% for video in trick.videos %}
+									<div class="col-12 col-sm-3 p-3">
+										<div class="embed-responsive embed-responsive-16by9">
+											<iframe class="embed-responsive-item" src="{{ video.url }}" allowfullscreen></iframe>
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+
+						</div>
+					{% endif %}
+				</div>
+
+			</section>
+
 		{% endif %}
 
-		<h2>Commentaires</h2>
-		<div id="comments">
-			{% include "comment/_list.html.twig" %}
 
-			<div class="text-center">
-				<a href="{{ path('comment_listhtml')}}" class="load-more" style="display: none;">
-					<i class="fa fa-plus-square"></i>
-				</a>
-				<input type="hidden" id="npage" value="1">
-				<input type="hidden" id="pagecount" value="{{ pagecount }}">
-				<input type="hidden" id="nbperpage" value="{{ nbperpage }}">
+		<section>
+			<h2>Commentaires</h2>
+			<div id="comments">
+				{% include "comment/_list.html.twig" %}
+
+				<div class="text-center">
+					<a href="{{ path('comment_listhtml')}}" class="load-more" style="display: none;">
+						<i class="fa fa-plus-square"></i>
+					</a>
+					<input type="hidden" id="npage" value="1">
+					<input type="hidden" id="pagecount" value="{{ pagecount }}">
+					<input type="hidden" id="nbperpage" value="{{ nbperpage }}">
+				</div>
+
+				<div id="comment_new">
+					{% if is_granted('ROLE_USER') %}
+						{{ form_start(form) }}
+						{{ form_widget(form) }}
+
+						<button class="btn btn-primary">Enregistrer</button>
+						{{ form_end(form) }}
+					{% else %}
+						<div class="alert alert-primary" role="alert">
+							Pour ajouter un commentaire, vous devez vous
+							<a href="{{ path('security_login') }}">connecter</a>
+						</div>
+					{% endif %}
+				</div>
 			</div>
 
-			<div id="comment_new">
-				{% if is_granted('ROLE_USER') %}
-					{{ form_start(form) }}
-					{{ form_widget(form) }}
-
-					<button class="btn btn-primary">Enregistrer</button>
-					{{ form_end(form) }}
-				{% else %}
-					<div class="alert alert-primary" role="alert">
-						Pour ajouter un commentaire, vous devez vous
-						<a href="{{ path('security_login') }}">connecter</a>
-					</div>
-				{% endif %}
-			</div>
-		</div>
+		</section>
 	</div>
 {% endblock %}
 

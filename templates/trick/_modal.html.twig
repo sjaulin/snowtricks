@@ -1,9 +1,7 @@
-<!-- Button trigger modal -->
 <a href="#modal{{ picture.id }}" data-toggle="modal">
-	<img src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}" width="150"/>
+	<img src="{{ asset(src_trick_base ~ picture.name) }}" alt="Photo {{ trick.name }}" class="img-fluid"/>
 </a>
 
-<!-- Modal -->
 <div class="modal fade" id="modal{{ picture.id }}" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-fullscreen-sm-down" role="document">
 		<div class="modal-content">

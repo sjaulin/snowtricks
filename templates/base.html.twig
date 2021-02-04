@@ -7,7 +7,7 @@
 			{% block title %}{% endblock %}SnowTricks
 		</title>
 
-		<link rel="stylesheet" href="https://bootswatch.com/4/minty/bootstrap.min.css">
+		<link rel="stylesheet" href="https://bootswatch.com/4/yeti/bootstrap.min.css">
 		<link rel="stylesheet" href="{{ asset('asset/css/custom.css') }}">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"> {% block stylesheets %}{% endblock %}
 		</head>
@@ -21,11 +21,13 @@
 			<main class="flex-shrink-0 pb-5">
 				<div class="container">
 					{% for type, messages in app.flashes() %}
-						{% for message in messages %}
-							<div class="alert alert-{{ type }}">
-								{{ message }}
-							</div>
-						{% endfor %}
+						<section>
+							{% for message in messages %}
+								<div class="alert alert-{{ type }}">
+									{{ message }}
+								</div>
+							{% endfor %}
+						</section>
 					{% endfor %}
 				</div>
 
@@ -39,8 +41,8 @@
 			</main>
 
 			<footer class="footer mt-auto py-5">
-				Logo créé par
-				<a href="https://fr.freepik.com/vecteurs/millesime">dgim-studio</a>
+				Développé avec le Framework
+				<a href="https://symfony.com/" target="_blank">Symfony</a>
 			</footer>
 		</body>
 	</html>
