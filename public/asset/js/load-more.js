@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Setting little delay while displaying new content
                     setTimeout(function () {
                         // appending posts after last post with class="post"
-                        jQuery(".trick-item:last").after(response).show().fadeIn("slow");
+                        jQuery(".load-more-item:last").after(response).show().fadeIn("slow");
 
                         // checking row value is greater than allcount or not
                         if (npage >= pagecount) {

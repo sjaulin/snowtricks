@@ -96,9 +96,9 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
             $manager->persist($category);
 
             // Tricks in category
-            for ($t = 0; $t < 5; $t++) {
-                $trick = new Trick();
+            for ($t = 0; $t < 20; $t++) {
                 shuffle($users);
+                $trick = new Trick();
                 $trick->setName(ucwords($faker->unique()->word()))
                     ->setOwner($users[0])
                     ->setDescription($faker->text(150))
@@ -106,8 +106,8 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
                     ->setCategory($category);
 
                 // Pictures
-                shuffle($picturesList);
-                for ($p = 0; $p < 2; $p++) {
+                for ($p = 0; $p < 5; $p++) {
+                    shuffle($picturesList);
                     $fileName = $picturesList[0];
                     $filePath = $dir . '/' . $fileName;
                     $this->imageService->crop($filePath, 1.5);
@@ -116,20 +116,19 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
                     $trick->addPicture($picture);
                 }
                 // Videos
-                shuffle($videosList);
-                for ($v = 0; $v < 2; $v++) {
-                    $video_url = !empty($videosList[$v]) ? $videosList[$v] : $videosList[0];
+                for ($v = 0; $v < 3; $v++) {
+                    shuffle($videosList);
                     $video = new Video;
-                    $video->setUrl($video_url);
+                    $video->setUrl($videosList[0]);
                     $trick->addVideo($video);
                 }
 
                 // Comments
-                shuffle($users);
-                for ($u = 0; $u < rand(1, 3); $u++) {
+                for ($u = 0; $u < rand(4, 20); $u++) {
+                    shuffle($users);
                     $comment = new Comment;
                     $comment->setMessage($faker->unique()->text(150));
-                    $comment->setUser($users[$u]);
+                    $comment->setUser($users[0]);
                     $manager->persist($comment);
                     $trick->addComment($comment);
                 }

@@ -10,6 +10,7 @@ use App\Form\CommentType;
 use App\Service\FileService;
 use App\Repository\TrickRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Service\Image as ImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,6 +27,7 @@ class TrickController extends AbstractController
 {
 
     const TRICK_NUMBER = 4;
+    const COMMENT_NUMBER = 5;
 
     public function __construct(
         TrickRepository $repository,
@@ -148,10 +150,21 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Display a trick
+     *
      * @Route("/{category_slug}/{slug}", name="trick_show")
+     * @param string $slug
+     * @param Request $request
+     * @param TrickRepository $trickRepository
+     * @param CommentRepository $commentRepository
+     * @return Response
      */
-    public function show($slug, Request $request, TrickRepository $trickRepository): Response
-    {
+    public function show(
+        $slug,
+        Request $request,
+        TrickRepository $trickRepository,
+        CommentRepository $commentRepository
+    ): Response {
 
         $trick = $trickRepository->findOneBy([
             'slug' => $slug
@@ -165,6 +178,11 @@ class TrickController extends AbstractController
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
+
+        $commentCount = $commentRepository->count([]);
+        $pageCount = ceil($commentCount / self::COMMENT_NUMBER);
+        $firstComments = $commentRepository->findBy([], null, self::COMMENT_NUMBER, 0);
+
         if ($this->isGranted('ROLE_USER') && $form->isSubmitted() && $form->isValid()) {
             $comment->setTrick($trick);
             $comment->setUser($this->getUser());
@@ -176,10 +194,28 @@ class TrickController extends AbstractController
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
             'form' => $form->createView(),
-            'comments' => $trick->getComments()
+            'pagecount' => $pageCount,
+            'nbperpage' => self::COMMENT_NUMBER,
+            'comments' => $firstComments
         ]);
     }
 
+    /**
+     * Return Comments list HTML
+     *
+     * @Route ("/comment/listhtml", name="comment_listhtml", priority=1)
+     * @param CommentRepository $repository
+     * @return Response
+     */
+    public function commentListHtml(Request $request, CommentRepository $repository): Response
+    {
+
+        $offset = ($request->get('npage') - 1) * self::COMMENT_NUMBER;
+        $comments = $repository->findBy([], null, self::COMMENT_NUMBER, $offset);
+        return $this->render('comment/_list.html.twig', [
+            'comments' => $comments
+        ]);
+    }
 
     /**
      * @Route("trick/{id}/edit", name="trick_edit")

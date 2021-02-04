@@ -1,0 +1,13 @@
+{% for comment in comments %}
+	<div class="comment load-more-item card mt-2 mb-2">
+		<div class="card-body">
+			<h5 class="card-title">
+				{% if comment.user.avatar is not empty %}
+					<img src="{{ asset(src_user_base ~ comment.user.avatar.name) }}" class="avatar rounded-circle" alt="{{ comment.user.pseudo }}">
+				{% endif %}
+				@{{ comment.user.pseudo }}</h5>
+			<h6 class="card-subtitle mb-2 text-muted">{{ comment.createdAt|date("m/d/Y") }}</h6>
+			<p class="card-text">{{ comment.message }}.</p>
+		</div>
+	</div>
+{% endfor %}

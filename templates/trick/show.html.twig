@@ -69,19 +69,16 @@
 
 		<h2>Commentaires</h2>
 		<div id="comments">
-			{% for comment in comments %}
-				<div class="comment card mt-2 mb-2">
-					<div class="card-body">
-						<h5 class="card-title">
-							{% if comment.user.avatar is not empty %}
-								<img src="{{ asset(src_user_base ~ comment.user.avatar.name) }}" class="avatar rounded-circle" alt="{{ comment.user.pseudo }}">
-							{% endif %}
-							@{{ comment.user.pseudo }}</h5>
-						<h6 class="card-subtitle mb-2 text-muted">{{ comment.createdAt|date("m/d/Y") }}</h6>
-						<p class="card-text">{{ comment.message }}.</p>
-					</div>
-				</div>
-			{% endfor %}
+			{% include "comment/_list.html.twig" %}
+
+			<div class="text-center">
+				<a href="{{ path('comment_listhtml')}}" class="load-more" style="display: none;">
+					<i class="fa fa-plus-square"></i>
+				</a>
+				<input type="hidden" id="npage" value="1">
+				<input type="hidden" id="pagecount" value="{{ pagecount }}">
+				<input type="hidden" id="nbperpage" value="{{ nbperpage }}">
+			</div>
 
 			<div id="comment_new">
 				{% if is_granted('ROLE_USER') %}
@@ -98,7 +95,9 @@
 				{% endif %}
 			</div>
 		</div>
-
-
 	</div>
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('asset/js/load-more.js') }}"></script>
 {% endblock %}
