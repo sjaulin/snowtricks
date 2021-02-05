@@ -3,7 +3,7 @@ title Cas d'utilisation : Ajouter un trick
 left to right direction
 
 actor "Visiteur" as vi
-rectangle AjouterCommentaire {
+rectangle AjouterTrick {
     usecase "Ajouter un trick" as UC1
     usecase "S'authentifier" as UC2
 
