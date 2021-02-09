@@ -1,0 +1,26 @@
+@startuml
+title Séquence : Ajouter un commentaire
+actor Utilisateur
+participant Application
+database BDD
+Utilisateur -> Application : Clique sur le "Ajouter un trick"
+Application --> Utilisateur : Affichage du formulaire
+Utilisateur -> Application : Soumission du formulaire
+Application -> Application : Form\TrickType::constraints
+note over Application
+pictures::Image::maxSize = 4096k
+pictures::Image::mimeTypes = jpeg
+end note
+Application -> Application : Entity\Trick::constraints
+note over Application
+name::@Assert::NotBlank
+name::@ORM::unique=true
+end note
+alt errors
+Application --> Utilisateur : Retour sur le formulaire
+else
+Application -> BDD : EntityManagern->persist($trickData);
+BDD --> Application : ok
+Application --> Utilisateur : Message de confirmation
+end
+@enduml

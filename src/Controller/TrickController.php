@@ -180,10 +180,13 @@ class TrickController extends AbstractController
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
+        $criteria = [
+            'trick' => $trick
+        ];
 
-        $commentCount = $commentRepository->count([]);
+        $commentCount = $commentRepository->count($criteria);
         $pageCount = ceil($commentCount / self::COMMENT_NUMBER);
-        $firstComments = $commentRepository->findBy([], null, self::COMMENT_NUMBER, 0);
+        $firstComments = $commentRepository->findBy($criteria, null, self::COMMENT_NUMBER, 0);
 
         if ($this->isGranted('ROLE_USER') && $form->isSubmitted() && $form->isValid()) {
             $comment->setTrick($trick);

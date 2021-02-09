@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    var link = document.querySelector('.load-more');
+    var link = document.querySelector(".load-more");
     link.style.display = "block";
 
     // Load more data
-    link.addEventListener('click', function (link) {
+    link.addEventListener("click", function (link) {
         event.preventDefault();
         const baseurl = this.href;
-        const icon = this.querySelector('i');
+        const icon = this.querySelector("i");
 
         var npage = Number(document.getElementById("npage").value);
         var pagecount = Number(document.getElementById("pagecount").value);
@@ -16,10 +16,10 @@ document.addEventListener("DOMContentLoaded", function () {
             var npage = npage + 1;
             jQuery.ajax({
                 url: baseurl,
-                type: 'post',
+                type: "post",
                 data: { npage: npage },
                 beforeSend: function () {
-                    icon.classList.replace('fa-plus-square', 'fa-spinner')
+                    icon.classList.replace("fa-plus-square", "fa-spinner")
                 },
                 success: function (response) {
 
@@ -30,9 +30,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         // checking row value is greater than allcount or not
                         if (npage >= pagecount) {
-                            jQuery('.load-more').hide();
+                            jQuery(".load-more").hide();
                         } else {
-                            icon.classList.replace('fa-spinner', 'fa-plus-square')
+                            icon.classList.replace("fa-spinner", "fa-plus-square")
                         }
                     }, 1);
                 }

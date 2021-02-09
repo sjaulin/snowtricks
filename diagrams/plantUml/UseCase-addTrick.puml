@@ -1,0 +1,14 @@
+@startuml
+title Cas d'utilisation : Ajouter un trick
+left to right direction
+
+actor "Visiteur" as vi
+rectangle AjouterTrick {
+    usecase "Ajouter un trick" as UC1
+    usecase "S'authentifier" as UC2
+
+    UC1 -left-> UC2 : include
+}
+vi -left-> UC1
+
+@enduml
