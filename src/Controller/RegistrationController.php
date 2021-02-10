@@ -16,7 +16,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
-use App\Service\Image as ImageService;
+use App\Service\ImageService;
 
 class RegistrationController extends AbstractController
 {

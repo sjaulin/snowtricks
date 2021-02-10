@@ -14,7 +14,7 @@ use App\Entity\Comment;
 use App\Entity\User;
 use App\Entity\Video;
 use App\Entity\Avatar;
-use App\Service\Image as ImageService;
+use App\Service\ImageService;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Faker\Factory;
 use App\DataFixtures\InitFixtures;

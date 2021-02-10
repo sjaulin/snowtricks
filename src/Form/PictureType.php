@@ -21,7 +21,7 @@ class PictureType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Image([
-                        'maxSize' => '4096k',
+                        'maxSize' => '1000k',
                         'allowPortrait' => false,
                         'allowPortraitMessage' => 'Vous devez envoyer une photo au format paysage',
                         'mimeTypes' => [

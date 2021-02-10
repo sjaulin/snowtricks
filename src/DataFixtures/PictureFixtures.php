@@ -5,7 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Picture;
 use App\DataFixtures\TrickFixtures;
 use Doctrine\Persistence\ObjectManager;
-use App\Service\Image as ImageService;
+use App\Service\ImageService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
