@@ -55,7 +55,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             $user = new User;
             $hash = $this->encoder->encodePassword($user, 'password');
             $user->setEmail("User$u@gmail.com")
-                ->setPseudo($faker->unique()->firstName())
+                ->setPseudo("User#$u")
                 ->setPassword($hash)
                 ->setIsVerified(true);
 

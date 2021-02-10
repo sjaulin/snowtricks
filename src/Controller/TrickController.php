@@ -161,11 +161,6 @@ class TrickController extends AbstractController
                     'slug' => $trick->getSlug()
                 ]);
             }
-
-            foreach ($form as $fieldName => $formField) {
-                $errors[$fieldName] = $formField->getErrors(true, true);
-            }
-            return $this->json($errors, 200);
         }
         return $this->render('trick/new.html.twig', [
             'trick' => $trick,
