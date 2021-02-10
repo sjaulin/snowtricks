@@ -9,19 +9,21 @@ use App\Form\TrickType;
 use App\Form\CommentType;
 use App\Service\FileService;
 use App\Repository\TrickRepository;
-use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
-use App\Service\Image as ImageService;
+use App\Repository\CategoryRepository;
+use App\Service\ImageService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Service\FormService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TrickController extends AbstractController
 {
@@ -108,42 +110,62 @@ class TrickController extends AbstractController
      * @Route("trick/new", name="trick_new")
      * @IsGranted("ROLE_USER")
      */
-    public function new(Request $request, FileService $fileService, ImageService $imageService)
-    {
+    public function new(
+        Request $request,
+        FileService $fileService,
+        ImageService $imageService,
+        FormService $formService
+    ) {
         $trick = new Trick();
 
-        $form = $this->createForm(TrickType::class, $trick);
+        $form = $this->createForm(TrickType::class, $trick, ['attr' => ['id' => 'trick-form']]);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $trick->setOwner($this->getUser());
-
-            // Save new pictures
-            $pictures = $trick->getPictures();
-            foreach ($pictures as $picture) {
-                /**
-                 * @var Picture $picture
-                 */
-                if ($picture->getFile()) {
-                    $filename = $fileService->save(
-                        $picture->getFile(),
-                        $this->getParameter('uploads_trick_path')
-                    );
-                    $imageService->crop($this->getParameter('uploads_trick_path') . '/' . $filename, 1.5);
-                    $picture->setName($filename);
-                    $picture->setTrick($trick);
+        if ($form->isSubmitted()) {
+            if ($request->isXmlHttpRequest()) {
+                if ($form->isValid()) {
+                    return new JsonResponse(['code' => 'ok'], 200);
                 } else {
-                    $trick->removePicture($picture); // Avoid Bug if a field of collection is empty.
+                    $errors = $formService->getErrorsByIds($form, 'trick');
+                    return new JsonResponse(['code' => 'error', 'errors' => $errors], 200);
                 }
             }
 
-            $this->em->persist($trick); // Also persist pictures et videos by cascade.
-            $this->em->flush();
+            if ($form->isValid()) {
+                $trick->setOwner($this->getUser());
 
-            $this->addFlash('success', 'Le trick a été créé');
-            return $this->redirectToRoute('trick_show', [
-                'category_slug' => $trick->getCategory()->getSlug(),
-                'slug' => $trick->getSlug()
-            ]);
+                // Save new pictures
+                $pictures = $trick->getPictures();
+                foreach ($pictures as $picture) {
+                    /**
+                     * @var Picture $picture
+                     */
+                    if ($picture->getFile()) {
+                        $filename = $fileService->save(
+                            $picture->getFile(),
+                            $this->getParameter('uploads_trick_path')
+                        );
+                        $imageService->crop($this->getParameter('uploads_trick_path') . '/' . $filename, 1.5);
+                        $picture->setName($filename);
+                        $picture->setTrick($trick);
+                    } else {
+                        $trick->removePicture($picture); // Avoid Bug if a field of collection is empty.
+                    }
+                }
+
+                $this->em->persist($trick); // Also persist pictures et videos by cascade.
+                $this->em->flush();
+
+                $this->addFlash('success', 'Le trick a été créé');
+                return $this->redirectToRoute('trick_show', [
+                    'category_slug' => $trick->getCategory()->getSlug(),
+                    'slug' => $trick->getSlug()
+                ]);
+            }
+
+            foreach ($form as $fieldName => $formField) {
+                $errors[$fieldName] = $formField->getErrors(true, true);
+            }
+            return $this->json($errors, 200);
         }
         return $this->render('trick/new.html.twig', [
             'trick' => $trick,
@@ -230,7 +252,8 @@ class TrickController extends AbstractController
         Request $request,
         FileService $fileService,
         ImageService $imageService,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        FormService $formService
     ) {
 
         if (!$this->isGranted('ENTITY_EDIT', $trick)) {
@@ -247,38 +270,50 @@ class TrickController extends AbstractController
             $originalVideos->add($video);
         }
 
-        $form = $this->createForm(TrickType::class, $trick);
+        $form = $this->createForm(TrickType::class, $trick, ['attr' => ['id' => 'trick-form']]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $formPictures = $form->getData()->getPictures()->toArray();
+        if ($form->isSubmitted()) {
+            if ($request->isXmlHttpRequest()) {
+                if ($form->isValid()) {
+                    return new JsonResponse(['code' => 'ok'], 200);
+                } else {
+                    $errors = $formService->getErrorsByIds($form, 'trick');
+                    return new JsonResponse(['code' => 'error', 'errors' => $errors], 200);
+                }
+            }
 
-            if (!empty($formPictures)) {
-                foreach ($formPictures as $picture) {
-                    /** @var Picture $picture */
-                    $file = $picture->getFile();
-                    if ($file && $file instanceof UploadedFile) {
-                        $fileName = $fileService->save($file, $this->getParameter('uploads_trick_path'));
-                        $picture->setName($fileName);
+            if ($form->isValid()) {
+                $formPictures = $form->getData()->getPictures()->toArray();
+
+                if (!empty($formPictures)) {
+                    foreach ($formPictures as $picture) {
+                        /** @var Picture $picture */
+                        $file = $picture->getFile();
+                        if ($file && $file instanceof UploadedFile) {
+                            $fileName = $fileService->save($file, $this->getParameter('uploads_trick_path'));
+                            $imageService->crop($this->getParameter('uploads_trick_path') . '/' . $fileName, 1.5);
+                            $picture->setName($fileName);
+                        }
                     }
                 }
-            }
 
-            // Delete old pictures
-            foreach ($originalPictures as $picture) {
-                /** @var Picture $picture */
-                if ($trick->getPictures()->contains($picture) === false) {
-                    $filesystem->remove($this->getParameter('uploads_trick_path') . '/' . $picture->getName());
+                // Delete old pictures
+                foreach ($originalPictures as $picture) {
+                    /** @var Picture $picture */
+                    if ($trick->getPictures()->contains($picture) === false) {
+                        $filesystem->remove($this->getParameter('uploads_trick_path') . '/' . $picture->getName());
+                    }
                 }
+
+                $this->em->flush();
+
+                $this->addFlash('success', 'Le trick a été modifié');
+                return $this->redirectToRoute('trick_show', [
+                    'category_slug' => $trick->getCategory()->getSlug(),
+                    'slug' => $trick->getSlug()
+                ]);
             }
-
-            $this->em->flush();
-
-            $this->addFlash('success', 'Le trick a été modifié');
-            return $this->redirectToRoute('trick_show', [
-                'category_slug' => $trick->getCategory()->getSlug(),
-                'slug' => $trick->getSlug()
-            ]);
         }
 
         return $this->render('trick/edit.html.twig', [
