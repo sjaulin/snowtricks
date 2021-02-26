@@ -29,7 +29,7 @@ class TrickController extends AbstractController
 {
 
     const TRICK_NUMBER = 4;
-    const COMMENT_NUMBER = 5;
+    const COMMENT_NUMBER = 10;
 
     public function __construct(
         TrickRepository $repository,
