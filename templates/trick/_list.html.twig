@@ -29,7 +29,7 @@
 						{% endif %}
 						@{{ trick.owner.pseudo }},
 					{% endif %}
-					{{ trick.createdAt|date("m/d/Y") }}
+					{{ trick.createdAt|date("d/m/Y") }}
 				</p>
 				<p>
 					<span class="badge badge-info">{{ trick.category.name }}</span>
