@@ -101,8 +101,8 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
                 $trick = new Trick();
                 $trick->setName(ucwords($faker->unique()->word()))
                     ->setOwner($users[0])
+                    ->setCreatedAt($faker->dateTimeThisDecade())
                     ->setDescription($faker->text(rand(320, 455)))
-                    ->setCreatedAt(new \DateTime)
                     ->setCategory($category);
 
                 // Pictures
@@ -128,6 +128,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
                     shuffle($users);
                     $comment = new Comment;
                     $comment->setMessage($faker->unique()->text(150));
+                    $comment->setCreatedAt($faker->dateTimeThisDecade());
                     $comment->setUser($users[0]);
                     $manager->persist($comment);
                     $trick->addComment($comment);

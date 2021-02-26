@@ -58,7 +58,7 @@ class TrickController extends AbstractController
 
         $trickCount = $repository->count([]);
         $pageCount = ceil($trickCount / self::TRICK_NUMBER);
-        $firstTricks = $repository->findBy([], null, self::TRICK_NUMBER, 0);
+        $firstTricks = $repository->findBy([], array('id' => 'DESC'), self::TRICK_NUMBER, 0);
 
         return $this->render('home.html.twig', [
             'tricks' => $firstTricks,
@@ -203,7 +203,7 @@ class TrickController extends AbstractController
 
         $commentCount = $commentRepository->count($criteria);
         $pageCount = ceil($commentCount / self::COMMENT_NUMBER);
-        $firstComments = $commentRepository->findBy($criteria, null, self::COMMENT_NUMBER, 0);
+        $firstComments = $commentRepository->findBy($criteria, array('id' => 'DESC'), self::COMMENT_NUMBER, 0);
 
         if ($this->isGranted('ROLE_USER') && $form->isSubmitted() && $form->isValid()) {
             $comment->setTrick($trick);
@@ -211,6 +211,10 @@ class TrickController extends AbstractController
             $this->em->persist($comment);
             $this->em->flush();
             $this->addFlash('success', 'Le commentaire a bien été ajouté');
+            return $this->redirectToRoute('trick_show', [
+                'category_slug' => $trick->getCategory()->getSlug(),
+                'slug' => $trick->getSlug()
+            ]);
         }
 
         return $this->render('trick/show.html.twig', [
