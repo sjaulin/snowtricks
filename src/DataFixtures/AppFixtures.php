@@ -124,7 +124,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
                 }
 
                 // Comments
-                for ($u = 0; $u < rand(4, 20); $u++) {
+                for ($u = 0; $u < rand(20, 50); $u++) {
                     shuffle($users);
                     $comment = new Comment;
                     $comment->setMessage($faker->unique()->text(150));

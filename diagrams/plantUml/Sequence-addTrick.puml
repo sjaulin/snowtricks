@@ -1,5 +1,5 @@
 @startuml
-title Séquence : Ajouter un commentaire
+title Séquence : Ajouter un trick
 actor Utilisateur
 participant Application
 database BDD
